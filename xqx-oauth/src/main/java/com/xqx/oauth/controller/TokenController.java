@@ -22,7 +22,7 @@ public class TokenController {
 
 
     @RequestMapping(value = "/login")
-    public ResponseMessage doLogin(@RequestParam("name")String name, @RequestParam("password")String password){
+    public ResponseMessage<Token> doLogin(@RequestParam("name")String name, @RequestParam("password")String password){
         logger.info("登陆，用户名：{}",name);
         try{
             Token token = tokenService.createToken(name, password);
@@ -39,7 +39,7 @@ public class TokenController {
 
 
     @RequestMapping(value = "/verifyToken")
-    public ResponseMessage verifyToken(@RequestParam("accessToken")String accessToken){
+    public ResponseMessage<Boolean> verifyToken(@RequestParam("accessToken")String accessToken){
         logger.info("检验Token，token：{}",accessToken);
         try{
             if(tokenService.verifyToken(accessToken) != null){
@@ -53,7 +53,7 @@ public class TokenController {
     }
 
     @RequestMapping(value = "/refreshToken")
-    public ResponseMessage refreshToken(@RequestParam("refreshToken")String refreshToken){
+    public ResponseMessage<Token> refreshToken(@RequestParam("refreshToken")String refreshToken){
         logger.info("更新Token，refreshToken：{}",refreshToken);
         try{
 

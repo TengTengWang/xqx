@@ -6,7 +6,6 @@ import com.xqx.base.exception.CallRemoteServiceException;
 import com.xqx.base.exception.ErrorCode;
 import com.xqx.base.exception.ServiceException;
 import com.xqx.base.gson.GsonUtil;
-import com.xqx.base.ribbon.http.HttpRestTemplate;
 import com.xqx.base.vo.ResponseMessage;
 import com.xqx.base.vo.Token;
 import com.xqx.oauth.exception.TokenException;
@@ -29,7 +28,6 @@ public class TokenServicImpl implements TokenService {
     @Autowired
     RestTemplate restTemplate;
 
-    private static final HttpRestTemplate httpRestTemplate = HttpRestTemplate.getInstance();
     private static final Long EXPIRE_TIME = 60000L;
     private static final Long EXPIRE_TIME_MAX = 60000L * 10;
 
@@ -42,7 +40,7 @@ public class TokenServicImpl implements TokenService {
         paramMap.add("name", name);
         paramMap.add("password", password);
 
-        String body = httpRestTemplate.post(restTemplate,"http://USER-SERVICE/user/login",paramMap, String.class);
+        String body = restTemplate.postForEntity("http://XQX-USER/getUser",paramMap, String.class).getBody();
 
         logger.info("执行登陆结果 == " + body);
         return body;
@@ -68,7 +66,6 @@ public class TokenServicImpl implements TokenService {
                 throw new ServiceException(ErrorCode.getErrorCode(responseMessage.getStatus()), responseMessage.getMessage());
             }
             Token token = signToken(responseMessage.getData().toString());
-            httpRestTemplate.setToken(token);
             return token;
         } catch (CallRemoteServiceException e) {
             throw new ServiceException(e,e.getErrorCode(),e.getErrMsg());

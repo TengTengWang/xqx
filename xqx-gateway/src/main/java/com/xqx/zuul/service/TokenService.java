@@ -25,7 +25,7 @@ public class TokenService {
 
         MultiValueMap<String, String> paramMap = new LinkedMultiValueMap<String, String>();
         paramMap.add("accessToken", token);
-        String body = restTemplate.postForEntity("http://APOLLO-AUTH0/verifyToken", paramMap, String.class).getBody();
+        String body = restTemplate.postForEntity("http://XQX-OAUTH-v1/verifyToken", paramMap, String.class).getBody();
         logger.info("Body ====== "+body);
         return  GsonUtil.fromJson(body,ResponseMessage.class);
     }

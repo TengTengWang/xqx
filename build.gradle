@@ -1,8 +1,12 @@
 subprojects{
+	ext {
+		springBootVersion = '2.0.1.RELEASE'
+		springModulVersion = '1.4.5.RELEASE'
+		springframeworkVersion = '5.0.5.RELEASE'
+		apolloClientVersion = '1.0.0'
+	}
 	buildscript {
-		ext {
-			springBootVersion = '2.0.1.RELEASE'
-		}
+		
 		repositories {
 			mavenCentral()
 	   		jcenter()
@@ -26,6 +30,7 @@ subprojects{
 	[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 	
 	repositories {
+		mavenLocal()
 		mavenCentral()
    		jcenter()
         maven { url 'http://repo.spring.io/snapshot' }
