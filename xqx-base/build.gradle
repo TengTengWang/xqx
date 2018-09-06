@@ -1,4 +1,4 @@
 dependencies {
-	compile group: 'org.springframework', name: 'spring-web', version: springframeworkVersion
+	compile "org.springframework:spring-web:${springframeworkVersion}"
 }
 

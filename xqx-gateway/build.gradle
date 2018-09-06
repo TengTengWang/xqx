@@ -9,9 +9,7 @@ dependencyManagement {
 
 dependencies {
 	compile project(':xqx-base')
-	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-zuul', version: springModulVersion
-	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-eureka', version: springModulVersion
-	compile group: 'com.ctrip.framework.apollo', name: 'apollo-client', version: apolloClientVersion
-	//testCompile('org.springframework.boot:spring-boot-starter-test')
-	//testCompile('io.projectreactor:reactor-test')
+	compile "org.springframework.cloud:spring-cloud-starter-zuul:${springModulVersion}"
+	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
+	compile "com.ctrip.framework.apollo:apollo-client:${apolloClientVersion}"
 }

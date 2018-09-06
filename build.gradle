@@ -4,6 +4,7 @@ subprojects{
 		springModulVersion = '1.4.5.RELEASE'
 		springframeworkVersion = '5.0.5.RELEASE'
 		apolloClientVersion = '1.0.0'
+		mysqlVersion = '8.0.12'
 	}
 	buildscript {
 		

@@ -10,11 +10,10 @@ dependencyManagement {
 
 dependencies {
 	compile project(':xqx-base')
-	compile('org.springframework.boot:spring-boot-starter-web')
-	compile('org.springframework.boot:spring-boot-starter-actuator')
-	compile('org.springframework.cloud:spring-cloud-starter-netflix-hystrix')
-	//compile（'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.0.1.RELEASE'
-	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-eureka', version: springModulVersion
-	compile group: 'com.ctrip.framework.apollo', name: 'apollo-client', version: apolloClientVersion
+	compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+	compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
+	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
+	compile "org.springframework.cloud: spring-cloud-starter-eureka:${springModulVersion}"
+	compile "com.ctrip.framework.apollo:apollo-client:${apolloClientVersion}"
 	compile group: 'com.auth0', name: 'java-jwt', version: '3.4.0'
 }
