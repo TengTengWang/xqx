@@ -15,6 +15,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -27,10 +28,12 @@ public class TokenServicImpl implements TokenService {
 
     @Autowired
     RestTemplate restTemplate;
-
-    private static final Long EXPIRE_TIME = 60000L;
-    private static final Long EXPIRE_TIME_MAX = 60000L * 10;
-
+    
+    @Value("${token.expried.time:60000}")
+    private Long exprieTime;
+    
+    @Value("${token.expried.max.time:600000}")
+    private Long exprieTimeMax;
 
 
     @HystrixCommand(fallbackMethod = "doLoginFallback")
@@ -104,8 +107,9 @@ public class TokenServicImpl implements TokenService {
     }
 
     private Token signToken(String str) throws TokenException {
-        String accessToken = JWTHelper.sign(str, EXPIRE_TIME);
-        String refreshToken = JWTHelper.sign(str, EXPIRE_TIME_MAX);
+    	logger.info("Token过期时长：{}，最大过期时长：{}",exprieTime,exprieTimeMax);
+        String accessToken = JWTHelper.sign(str, exprieTime);
+        String refreshToken = JWTHelper.sign(str, exprieTimeMax);
         return new Token(accessToken, refreshToken);
     }
 }

@@ -4,6 +4,8 @@ include 'xqx-base'
 include 'xqx-gateway'
 include 'xqx-oauth'
 include 'xqx-user'
+include 'xqx-turbine'
+include 'xqx-hystrix-dashboard'
 
 
 
