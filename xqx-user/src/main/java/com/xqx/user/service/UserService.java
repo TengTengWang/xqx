@@ -7,9 +7,9 @@ import com.xqx.user.entity.User;
 
 public interface UserService {
 
-    boolean saveUser(User user) throws ServiceException;
+    User saveUser(User user) throws ServiceException;
 
-    boolean deleteUser(Long id) throws ServiceException;
+    void deleteUser(Long id) throws ServiceException;
 
     User getUserByID(Long id) throws ServiceException;
 
@@ -20,4 +20,8 @@ public interface UserService {
     List<User> listUser() throws ServiceException;
 
     Long getCount(String name) throws ServiceException;
+    
+    User doForbidden(Long id)throws ServiceException; 
+    
+    User doUnforbidden(Long id)throws ServiceException; 
 }

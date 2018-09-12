@@ -1,6 +1,6 @@
 subprojects{
 	ext {
-		springBootVersion = '2.0.1.RELEASE'
+		springBootVersion = '2.0.4.RELEASE'
 		springModulVersion = '1.4.5.RELEASE'
 		springframeworkVersion = '5.0.5.RELEASE'
 		apolloClientVersion = '1.0.0'

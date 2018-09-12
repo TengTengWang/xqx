@@ -47,6 +47,10 @@ public class LoginFilter extends BaseFilter{
         logger.info("LoginFilter Pre 0");
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
+        if("GET".equals(request.getMethod())) {
+        	getErrorRequsetContext(requestContext,401,
+                    ResponseMessage.fail(ErrorCode.HTTP_ERROR.getCode(),"请使用POST方式登陆"));
+        }
         HttpServletResponse response = requestContext.getResponse();
         logger.info("Send {} reqeust to {}",request.getMethod(), request.getRequestURL().toString());
 

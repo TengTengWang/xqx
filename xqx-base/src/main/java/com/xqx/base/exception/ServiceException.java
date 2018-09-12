@@ -2,7 +2,11 @@ package com.xqx.base.exception;
 
 public class ServiceException extends Exception{
 
-    private ErrorCode errorCode;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private ErrorCode errorCode;
     private String errMsg;
 
     public ServiceException(ErrorCode errorCode, String errMsg){

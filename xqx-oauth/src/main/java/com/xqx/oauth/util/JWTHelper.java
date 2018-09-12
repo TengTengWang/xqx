@@ -22,18 +22,15 @@ public class JWTHelper {
      *
      * 加密
      * @param object    数据对象
-     * @param expireTime  有效期，单位：毫秒
+     * @param expireTime  有效期，单位：秒
      * @param <T>
      * @return
      * @throws TokenException
      */
     public static <T> String sign(T object, Long expireTime) throws TokenException {
         try {
-            Algorithm algorithm = Algorithm.HMAC256(SECRET);
-
             String jsonString = new Gson().toJson(object, object.getClass());
-            return JWT.create().withClaim(PAYLOAD, jsonString)
-                    .withExpiresAt(new Date(System.currentTimeMillis() + expireTime)).sign(algorithm);
+            return sign(jsonString,expireTime);
         }catch (Exception e){
             throw new TokenException(e, ErrorCode.TOKEN_EXCEPTION,e.getMessage());
         }
@@ -43,7 +40,7 @@ public class JWTHelper {
      *
      * 加密
      * @param context    数据对象
-     * @param expireTime  有效期，单位：毫秒
+     * @param expireTime  有效期，单位：秒
      * @return
      * @throws TokenException
      */
@@ -51,7 +48,7 @@ public class JWTHelper {
         try {
             Algorithm algorithm = Algorithm.HMAC256(SECRET);
             return JWT.create().withClaim(PAYLOAD, context)
-                    .withExpiresAt(new Date(System.currentTimeMillis() + expireTime)).sign(algorithm);
+                    .withExpiresAt(new Date(System.currentTimeMillis() + expireTime * 1000)).sign(algorithm);
         }catch (Exception e){
             throw new TokenException(e, ErrorCode.TOKEN_EXCEPTION,e.getMessage());
         }

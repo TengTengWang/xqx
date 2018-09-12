@@ -82,7 +82,7 @@ public class AccessFilter extends BaseFilter {
                     ResponseMessage.fail(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "Authorization不能为空"));
         } else {
             // 校验token
-            ResponseMessage<String> responseMessage = tokenService.verifyToken(accessToken);
+            ResponseMessage<Boolean> responseMessage = tokenService.verifyToken(accessToken);
             if (responseMessage.getStatus() != 0){
                 getErrorRequsetContext(requestContext, 401,responseMessage);
             } else {

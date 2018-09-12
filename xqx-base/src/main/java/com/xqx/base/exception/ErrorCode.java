@@ -10,9 +10,11 @@ public enum ErrorCode {
     HTTP_ERROR(1002, "HTTP错误"),
     TOKEN_EXPIRED(2001, "Token过期"),
     TOKEN_EXCEPTION(2002, "Token异常"),
+    TOKEN_BLACLIST(2003, "当前用户已列入黑名单"),
     REMOTE_EXCEPTION(3001, "远程服务异常"),
     DAO_ERROR(4001, "数据持久层异常"),
     DAO_NOTFOUND(4004, "未检查到任何数据"),
+    SERVICE_ERROR(5001, "服务层异常"),
     TIME_OUT(9001, "请求超时");
 
 

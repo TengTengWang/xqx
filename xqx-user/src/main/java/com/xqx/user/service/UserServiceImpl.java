@@ -1,29 +1,34 @@
 package com.xqx.user.service;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 
+import javax.persistence.EntityNotFoundException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import com.xqx.base.exception.ErrorCode;
 import com.xqx.base.exception.ServiceException;
-import com.xqx.user.dao.UserDaoImpl;
+import com.xqx.user.dao.UserRepostory;
 import com.xqx.user.entity.User;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-
-    @Autowired
-    UserDaoImpl<User,Long> baseDaoImpl;
+	private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+	
+	@Autowired
+	UserRepostory userRepostory;
 
     @Override
-    public boolean saveUser(User user) throws ServiceException {
+    public User saveUser(User user) throws ServiceException {
         if(user == null){
             throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT,"User对象不能为Null");
         }
-        return baseDaoImpl.save(user);
+        return userRepostory.saveAndFlush(user);
     }
 
     @Override
@@ -31,7 +36,7 @@ public class UserServiceImpl implements UserService {
         if(id == null){
             throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT,"参数ID不能为Null");
         }
-        return baseDaoImpl.getOneById(User.class,id);
+        return userRepostory.getOne(id);
     }
 
     @Override
@@ -48,14 +53,11 @@ public class UserServiceImpl implements UserService {
         if(password.isEmpty()){
             throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT,"参数Password不能为空");
         }
-        LinkedHashMap<String,Object> filter = new LinkedHashMap<>();
-        filter.put("name",name);
-        filter.put("password",password);
-        List<User> users = baseDaoImpl.listObjecstByFeilds(User.class,filter);
-        if(users != null && users.size() > 0){
-            return users.get(0);
+        User user = userRepostory.findByNameAndPassword(name, password);
+        if(user == null) {
+        	throw new ServiceException(ErrorCode.DAO_NOTFOUND,"未找到用户");
         }
-        return null;
+        return user;
     }
 
     @Override
@@ -66,35 +68,62 @@ public class UserServiceImpl implements UserService {
         if(name.isEmpty()){
             throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT,"参数Name不能为空");
         }
-        LinkedHashMap<String,Object> filter = new LinkedHashMap<String,Object>();
-        filter.put("name",name);
-        return baseDaoImpl.listObjecstByFeilds(User.class,filter);
+        return userRepostory.findByUserName(name);
     }
 
     public List<User> listUser() throws ServiceException {
-        return baseDaoImpl.listObjects(User.class);
+        return userRepostory.findAll();
     }
 
     @Override
     public Long getCount(String name) throws ServiceException {
-        LinkedHashMap<String,Object> filter = null;
-        if(name != null && !name.isEmpty()){
-            filter = new LinkedHashMap<String,Object>();
-            filter.put("name",name);
+    	if(name == null){
+            throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT,"参数Name不能为Null");
         }
-        Object result = baseDaoImpl.count(User.class,filter);
-        if(result != null){
-            return Long.valueOf(result.toString());
-        }
-        return 0L;
+        User user = new User();
+        user.setName(name);
+        Example<User> example = Example.of(user);
+        return userRepostory.count(example);
     }
 
     @Override
-    public boolean deleteUser(Long id) throws ServiceException {
-        User user = getUserByID(id);
-        if(user == null){
-            throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT,"参数ID："+id+"为找到对应的有效记录");
-        }
-        return baseDaoImpl.deleteOne(user);
+    public void deleteUser(Long id) throws ServiceException {
+    	if(id == null) {
+    		throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT,"参数ID："+id+"不能为Null");
+    	}
+		userRepostory.deleteById(id);
+    }
+    
+    
+    @Override
+    public User doForbidden(Long id)throws ServiceException{
+    	try {
+			User user = userRepostory.getOne(id);
+			user.setForbidden(true);
+			return userRepostory.saveAndFlush(user);
+		} catch(EntityNotFoundException e){
+			throw new ServiceException(ErrorCode.DAO_NOTFOUND,"参数ID："+id+"为找到对应的有效记录");
+		} catch (Exception e) {
+			throw new ServiceException(ErrorCode.DAO_ERROR,"参数ID："+id+"设置黑名单失败");
+		}
+    }
+    
+    @Override
+    public User doUnforbidden(Long id)throws ServiceException{
+    	try {
+			User user = userRepostory.getOne(id);
+			if(user.getForbidden()) {
+				user.setForbidden(false);
+				return userRepostory.saveAndFlush(user);
+			}else {
+				logger.info("用户ID {}无需解禁",id);
+				return user;
+			}
+			
+		} catch(EntityNotFoundException e){
+			throw new ServiceException(ErrorCode.DAO_NOTFOUND,"参数ID："+id+"为找到对应的有效记录");
+		} catch (Exception e) {
+			throw new ServiceException(ErrorCode.DAO_ERROR,"参数ID："+id+"解禁失败");
+		}
     }
 }

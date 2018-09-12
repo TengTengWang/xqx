@@ -43,4 +43,5 @@ public class XqxOauthApplication {
 		return registrationBean; 
 	}
 
+
 }
