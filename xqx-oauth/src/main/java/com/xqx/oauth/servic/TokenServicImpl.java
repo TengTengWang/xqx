@@ -127,6 +127,8 @@ public class TokenServicImpl implements TokenService {
     	try {
 			BLACK_LIST.add(userId);
 			RemoteServiceHandler.doAddBlackList(userId);
+		} catch(CallRemoteServiceException e) {
+			throw new ServiceException(e, e.getErrorCode(), e.getErrMsg());
 		} catch (Exception e) {
 			throw new ServiceException(e, ErrorCode.UNKNOWN_ERROR, "添加黑名单失败");
 		}
@@ -137,6 +139,8 @@ public class TokenServicImpl implements TokenService {
     	try {
 			BLACK_LIST.remove(userId);
 			RemoteServiceHandler.doRemoveBlackList(userId);
+		} catch(CallRemoteServiceException e) {
+			throw new ServiceException(e, e.getErrorCode(), e.getErrMsg());
 		} catch (Exception e) {
 			throw new ServiceException(e, ErrorCode.UNKNOWN_ERROR, "删除黑名单失败");
 		}

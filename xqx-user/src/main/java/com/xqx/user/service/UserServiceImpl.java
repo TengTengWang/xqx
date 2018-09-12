@@ -102,9 +102,9 @@ public class UserServiceImpl implements UserService {
 			user.setForbidden(true);
 			return userRepostory.saveAndFlush(user);
 		} catch(EntityNotFoundException e){
-			throw new ServiceException(ErrorCode.DAO_NOTFOUND,"参数ID："+id+"为找到对应的有效记录");
+			throw new ServiceException(ErrorCode.DAO_NOTFOUND,"参数用户ID："+id+"未找到对应的有效记录");
 		} catch (Exception e) {
-			throw new ServiceException(ErrorCode.DAO_ERROR,"参数ID："+id+"设置黑名单失败");
+			throw new ServiceException(ErrorCode.DAO_ERROR,"参数用户ID："+id+"设置黑名单失败");
 		}
     }
     
@@ -121,9 +121,9 @@ public class UserServiceImpl implements UserService {
 			}
 			
 		} catch(EntityNotFoundException e){
-			throw new ServiceException(ErrorCode.DAO_NOTFOUND,"参数ID："+id+"为找到对应的有效记录");
+			throw new ServiceException(ErrorCode.DAO_NOTFOUND,"参数用户ID："+id+"未找到对应的有效记录");
 		} catch (Exception e) {
-			throw new ServiceException(ErrorCode.DAO_ERROR,"参数ID："+id+"解禁失败");
+			throw new ServiceException(ErrorCode.DAO_ERROR,"参数用户ID："+id+"解禁失败");
 		}
     }
 }
