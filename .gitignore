@@ -39,6 +39,7 @@ hs_err_pid*
 bin/
 gradle/
 .gradle/
+xqx-*/build/
 
 # local
 /certificates/
