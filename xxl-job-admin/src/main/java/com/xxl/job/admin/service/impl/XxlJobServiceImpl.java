@@ -102,7 +102,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 		if (GlueTypeEnum.BEAN==GlueTypeEnum.match(jobInfo.getGlueType()) && StringUtils.isBlank(jobInfo.getExecutorHandler())) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input")+"JobHandler") );
 		}
-		List<XxlJobInfo> existJobInfo = xxlJobInfoDao.getJobsByGroupAndDesc(jobInfo.getJobGroup(), jobInfo.getJobDesc());
+		List<XxlJobInfo> existJobInfo = xxlJobInfoDao.getJobsByDesc(jobInfo.getJobDesc());
 		if (existJobInfo != null && existJobInfo.size() > 0) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_jobdesc") + I18nUtil.getString("repeat")));
 		}
@@ -197,7 +197,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 		if (exists_jobInfo == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_id")+I18nUtil.getString("system_not_found")) );
 		}
-		List<XxlJobInfo> existJobInfo = xxlJobInfoDao.getJobsByGroupAndDescExceptSelf(exists_jobInfo.getJobGroup(), jobInfo.getJobDesc(), jobInfo.getId());
+		List<XxlJobInfo> existJobInfo = xxlJobInfoDao.getJobsByDescExceptSelf(jobInfo.getJobDesc(), jobInfo.getId());
 		if (existJobInfo != null && existJobInfo.size() > 0) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_jobdesc") + I18nUtil.getString("repeat")));
 		}

@@ -48,7 +48,16 @@ public class JobInfoController {
 
 		return "jobinfo/jobinfo.index";
 	}
-	
+
+	@RequestMapping(value = "/getAll")
+	@ResponseBody
+	public List<XxlJobGroup> getAll(Model model) {
+
+		// job group (executor)
+		List<XxlJobGroup> list = xxlJobGroupDao.findAll();
+
+		return list;
+	}
 	@RequestMapping("/pageList")
 	@ResponseBody
 	public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start,  

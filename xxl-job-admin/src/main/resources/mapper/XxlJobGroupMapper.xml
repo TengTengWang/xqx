@@ -33,6 +33,16 @@
 		WHERE t.address_type = #{addressType}
 		ORDER BY t.order ASC
 	</select>
+	<select id="findByTitle" parameterType="java.lang.String" resultMap="XxlJobGroup">
+		SELECT <include refid="Base_Column_List" />
+		FROM XXL_JOB_QRTZ_TRIGGER_GROUP AS t
+		WHERE t.title = #{title}
+	</select>
+	<select id="findByTitleExceptSelf" parameterType="java.util.HashMap" resultMap="XxlJobGroup">
+		SELECT <include refid="Base_Column_List" />
+		FROM XXL_JOB_QRTZ_TRIGGER_GROUP AS t
+		WHERE t.title = #{title} and t.id != #{id}
+	</select>
 
 	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobGroup" useGeneratedKeys="true" keyProperty="id" >
 		INSERT INTO XXL_JOB_QRTZ_TRIGGER_GROUP ( `app_name`, `title`, `order`, `address_type`, `address_list`)

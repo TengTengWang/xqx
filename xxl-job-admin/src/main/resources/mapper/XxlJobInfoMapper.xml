@@ -172,6 +172,17 @@
 		FROM XXL_JOB_QRTZ_TRIGGER_INFO AS t
 		WHERE t.job_group = #{jobGroup}
 	</select>
+	<select id="getJobsByDesc" parameterType="java.util.HashMap" resultMap="XxlJobInfo">
+		SELECT <include refid="Base_Column_List" />
+		FROM XXL_JOB_QRTZ_TRIGGER_INFO AS t
+		WHERE t.job_desc = #{jobDesc}
+	</select>
+	<select id="getJobsByDescExceptSelf" parameterType="java.util.HashMap" resultMap="XxlJobInfo">
+		SELECT <include refid="Base_Column_List" />
+		FROM XXL_JOB_QRTZ_TRIGGER_INFO AS t
+		WHERE t.job_desc = #{jobDesc}
+		AND t.id != #{id}
+	</select>
 
 	<select id="findAllCount" resultType="int">
 		SELECT count(1)
