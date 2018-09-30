@@ -57,7 +57,7 @@ public class AccessFilter extends BaseFilter {
     @Override
     public boolean shouldFilter() {
         String requestPath = RequestContext.getCurrentContext().getRequest().getRequestURL().toString();
-        return !requestPath.contains("/login") && !requestPath.contains("/refresh");
+        return !requestPath.contains("/login") && !requestPath.contains("/refresh")&& !requestPath.contains("/xqx-job-admin");
     }
 
     /**

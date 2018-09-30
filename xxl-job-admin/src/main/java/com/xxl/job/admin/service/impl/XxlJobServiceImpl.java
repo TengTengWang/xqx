@@ -1,5 +1,26 @@
 package com.xxl.job.admin.service.impl;
 
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.annotation.Resource;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.DateUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
+import org.quartz.CronExpression;
+import org.quartz.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+
 import com.xxl.job.admin.core.model.XxlJobGroup;
 import com.xxl.job.admin.core.model.XxlJobInfo;
 import com.xxl.job.admin.core.route.ExecutorRouteStrategyEnum;
@@ -13,19 +34,6 @@ import com.xxl.job.admin.service.XxlJobService;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.glue.GlueTypeEnum;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.DateUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
-import org.quartz.CronExpression;
-import org.quartz.SchedulerException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
-import javax.annotation.Resource;
-import java.text.MessageFormat;
-import java.util.*;
 
 /**
  * core job action for xxl-job
@@ -94,7 +102,11 @@ public class XxlJobServiceImpl implements XxlJobService {
 		if (GlueTypeEnum.BEAN==GlueTypeEnum.match(jobInfo.getGlueType()) && StringUtils.isBlank(jobInfo.getExecutorHandler())) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input")+"JobHandler") );
 		}
-
+		List<XxlJobInfo> existJobInfo = xxlJobInfoDao.getJobsByGroupAndDesc(jobInfo.getJobGroup(), jobInfo.getJobDesc());
+		if (existJobInfo != null && existJobInfo.size() > 0) {
+			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_jobdesc") + I18nUtil.getString("repeat")));
+		}
+		
 		// fix "\r" in shell
 		if (GlueTypeEnum.GLUE_SHELL==GlueTypeEnum.match(jobInfo.getGlueType()) && jobInfo.getGlueSource()!=null) {
 			jobInfo.setGlueSource(jobInfo.getGlueSource().replaceAll("\r", ""));
@@ -162,7 +174,6 @@ public class XxlJobServiceImpl implements XxlJobService {
 		if (ExecutorBlockStrategyEnum.match(jobInfo.getExecutorBlockStrategy(), null) == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_executorBlockStrategy")+I18nUtil.getString("system_unvalid")) );
 		}
-
 		// ChildJobId valid
 		if (StringUtils.isNotBlank(jobInfo.getChildJobId())) {
 			String[] childJobIds = StringUtils.split(jobInfo.getChildJobId(), ",");
@@ -185,6 +196,10 @@ public class XxlJobServiceImpl implements XxlJobService {
 		XxlJobInfo exists_jobInfo = xxlJobInfoDao.loadById(jobInfo.getId());
 		if (exists_jobInfo == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_id")+I18nUtil.getString("system_not_found")) );
+		}
+		List<XxlJobInfo> existJobInfo = xxlJobInfoDao.getJobsByGroupAndDescExceptSelf(exists_jobInfo.getJobGroup(), jobInfo.getJobDesc(), jobInfo.getId());
+		if (existJobInfo != null && existJobInfo.size() > 0) {
+			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_jobdesc") + I18nUtil.getString("repeat")));
 		}
 		//String old_cron = exists_jobInfo.getJobCron();
 
