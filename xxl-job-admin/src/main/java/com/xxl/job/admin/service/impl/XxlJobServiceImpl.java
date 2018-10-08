@@ -102,6 +102,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 		if (GlueTypeEnum.BEAN==GlueTypeEnum.match(jobInfo.getGlueType()) && StringUtils.isBlank(jobInfo.getExecutorHandler())) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("system_please_input")+"JobHandler") );
 		}
+		// 将desc设为唯一，根据desc查询job获得jobId，供rpc接口调用
 		List<XxlJobInfo> existJobInfo = xxlJobInfoDao.getJobsByDesc(jobInfo.getJobDesc());
 		if (existJobInfo != null && existJobInfo.size() > 0) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_jobdesc") + I18nUtil.getString("repeat")));
@@ -197,6 +198,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 		if (exists_jobInfo == null) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_id")+I18nUtil.getString("system_not_found")) );
 		}
+		// 校验jobDesc唯一
 		List<XxlJobInfo> existJobInfo = xxlJobInfoDao.getJobsByDescExceptSelf(jobInfo.getJobDesc(), jobInfo.getId());
 		if (existJobInfo != null && existJobInfo.size() > 0) {
 			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobinfo_field_jobdesc") + I18nUtil.getString("repeat")));
@@ -330,7 +332,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 		return dashboardMap;
 	}
 
-	private static final String TRIGGER_CHART_DATA_CACHE = "trigger_chart_data_cache";
+//	private static final String TRIGGER_CHART_DATA_CACHE = "trigger_chart_data_cache";
 	@Override
 	public ReturnT<Map<String, Object>> chartInfo(Date startDate, Date endDate) {
 		/*// get cache
