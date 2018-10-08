@@ -32,12 +32,24 @@ public class JobGroupController {
 
 	@RequestMapping(value = "/getAll")
 	@ResponseBody
-	public List<XxlJobGroup> getAll(Model model) {
+	public List<XxlJobGroup> getAll() {
 
 		// job group (executor)
 		List<XxlJobGroup> list = xxlJobGroupDao.findAll();
 
 		return list;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/getByTitle")
+	public XxlJobGroup getByTitle(String title) {
+
+		// job group (executor)
+		List<XxlJobGroup> list = xxlJobGroupDao.findByTitle(title);
+		if (list != null && list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
 	}
 
 	@RequestMapping
@@ -77,12 +89,13 @@ public class JobGroupController {
 			}
 		}
 
-		
+		// title唯一
 		List<XxlJobGroup> existXxlJobGroup = xxlJobGroupDao.findByTitle(xxlJobGroup.getTitle());
 		if (existXxlJobGroup != null && existXxlJobGroup.size() > 0) {
-			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobgroup_field_title") + I18nUtil.getString("repeat")));
+			return new ReturnT<String>(ReturnT.FAIL_CODE,
+					(I18nUtil.getString("jobgroup_field_title") + I18nUtil.getString("repeat")));
 		}
-		
+
 		int ret = xxlJobGroupDao.save(xxlJobGroup);
 		return (ret > 0) ? ReturnT.SUCCESS : ReturnT.FAIL;
 	}
@@ -113,11 +126,13 @@ public class JobGroupController {
 			}
 		}
 
-		List<XxlJobGroup> existXxlJobGroup = xxlJobGroupDao.findByTitleExceptSelf(xxlJobGroup.getTitle(), xxlJobGroup.getId());
-		if (existXxlJobGroup !=null && existXxlJobGroup.size() > 0) {
-			return new ReturnT<String>(ReturnT.FAIL_CODE, (I18nUtil.getString("jobgroup_field_title") + I18nUtil.getString("repeat")));
+		List<XxlJobGroup> existXxlJobGroup = xxlJobGroupDao.findByTitleExceptSelf(xxlJobGroup.getTitle(),
+				xxlJobGroup.getId());
+		if (existXxlJobGroup != null && existXxlJobGroup.size() > 0) {
+			return new ReturnT<String>(ReturnT.FAIL_CODE,
+					(I18nUtil.getString("jobgroup_field_title") + I18nUtil.getString("repeat")));
 		}
-		
+
 		int ret = xxlJobGroupDao.update(xxlJobGroup);
 		return (ret > 0) ? ReturnT.SUCCESS : ReturnT.FAIL;
 	}
