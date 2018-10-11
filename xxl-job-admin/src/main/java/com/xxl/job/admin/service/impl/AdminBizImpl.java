@@ -133,4 +133,13 @@ public class AdminBizImpl implements AdminBiz {
         return ReturnT.SUCCESS;
     }
 
+	// 添加一个方法，根据jobDesc描述查询id并执行
+	@Override
+	public ReturnT<String> triggerJob(String jobDesc) {
+		List<XxlJobInfo> jobsByDesc = xxlJobInfoDao.getJobsByDesc(jobDesc);
+		if (jobsByDesc != null && jobsByDesc.size() > 0) {
+			JobTriggerPoolHelper.trigger(jobsByDesc.get(0).getId(), -1, I18nUtil.getString("jobconf_trigger_type_api"));
+		}
+		return ReturnT.SUCCESS;
+	}
 }

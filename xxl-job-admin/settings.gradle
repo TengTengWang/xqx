@@ -1,3 +1,3 @@
 rootProject.name = 'xxl-job-admin'
 include 'xqx-base'
-includeFlat 'xxl-job-core'
+include 'xxl-job-core'

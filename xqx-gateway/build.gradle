@@ -11,4 +11,5 @@ dependencies {
 	compile project(':xqx-base')
 	compile "org.springframework.cloud:spring-cloud-starter-zuul:${springModulVersion}"
 	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
+	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
 }

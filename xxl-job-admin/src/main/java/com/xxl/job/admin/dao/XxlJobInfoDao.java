@@ -1,9 +1,10 @@
 package com.xxl.job.admin.dao;
 
-import com.xxl.job.admin.core.model.XxlJobInfo;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
+import com.xxl.job.admin.core.model.XxlJobInfo;
 
 
 /**
@@ -32,6 +33,10 @@ public interface XxlJobInfoDao {
 	public int delete(@Param("id") int id);
 
 	public List<XxlJobInfo> getJobsByGroup(@Param("jobGroup") int jobGroup);
+	
+	public List<XxlJobInfo> getJobsByDesc(@Param("jobDesc") String jobDesc);
+	
+	public List<XxlJobInfo> getJobsByDescExceptSelf(@Param("jobDesc") String jobDesc,@Param("id") int id);
 
 	public int findAllCount();
 

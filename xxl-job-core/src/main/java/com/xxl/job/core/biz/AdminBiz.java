@@ -53,5 +53,14 @@ public interface AdminBiz {
      * @return
      */
     public ReturnT<String> triggerJob(int jobId);
+    
+
+    /**
+     * 根据任务描述执行任务
+     * 
+     * @param jobDesc 任务描述 @XxlJobInfo.jobDesc
+     * @return 调用结果
+     */
+    public ReturnT<String> triggerJob(String jobDesc);
 
 }

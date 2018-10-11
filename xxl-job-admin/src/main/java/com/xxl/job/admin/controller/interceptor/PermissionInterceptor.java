@@ -67,7 +67,13 @@ public class PermissionInterceptor extends HandlerInterceptorAdapter {
 		if (!(handler instanceof HandlerMethod)) {
 			return super.preHandle(request, response, handler);
 		}
-		
+
+		// 开放接口
+		String servletPath = request.getServletPath();
+		if (servletPath.contains("/jobgroup/getAll") || servletPath.contains("/jobgroup/getByTitle")
+				|| servletPath.contains("/jobinfo/trigger/desc")) {
+			return super.preHandle(request, response, handler);
+		}
 		if (!ifLogin(request)) {
 			HandlerMethod method = (HandlerMethod)handler;
 			PermessionLimit permission = method.getMethodAnnotation(PermessionLimit.class);
