@@ -3,22 +3,16 @@ package com.xqx.oauth.servic;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.client.RestTemplate;
 
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.xqx.base.exception.CallRemoteServiceException;
 import com.xqx.base.exception.ErrorCode;
 import com.xqx.base.exception.ServiceException;
-import com.xqx.base.vo.ResponseMessage;
 import com.xqx.base.vo.Token;
 import com.xqx.base.vo.UserInfo;
 import com.xqx.oauth.exception.TokenException;
