@@ -9,10 +9,18 @@ dependencyManagement {
 
 dependencies {
 	compile project(':xqx-base')
-	compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
+	// spring boot 
 	compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+	// spring jpa
 	compile "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
+	// spring hystrix
+	compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
 	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
 	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
+	// spring zipkin
+	compile "org.springframework.cloud:spring-cloud-starter-zipkin"
+	// alibaba druid
+	compile 'com.alibaba:druid-spring-boot-starter:1.1.9'
+	// mysql
 	compile "mysql:mysql-connector-java:${mysqlVersion}"
 }

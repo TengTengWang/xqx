@@ -9,7 +9,12 @@ dependencyManagement {
 
 dependencies {
 	compile project(':xqx-base')
+	// spring cloud zuul
 	compile "org.springframework.cloud:spring-cloud-starter-zuul:${springModulVersion}"
+	// spring cloud eureka
 	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
+	// spring cloud hystrix
 	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
+	// spring cloud zipkin
+	compile "org.springframework.cloud:spring-cloud-starter-zipkin"
 }

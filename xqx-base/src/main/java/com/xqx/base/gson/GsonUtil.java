@@ -57,7 +57,7 @@ public class GsonUtil {
         }
         List<T> list = new ArrayList<>();
         for (final JsonElement elem : array) {
-            list.add(gson.fromJson(((JsonObject) elem).get("Record").toString(), clazz));
+            list.add(gson.fromJson(((JsonObject) elem).toString(), clazz));
         }
         return list;
     }

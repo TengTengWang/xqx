@@ -6,6 +6,7 @@ include 'xqx-oauth'
 include 'xqx-user'
 include 'xqx-turbine'
 include 'xqx-hystrix-dashboard'
+include 'xqx-monitor'
 include 'xxl-job-admin'
 include 'xxl-job-core'
 
