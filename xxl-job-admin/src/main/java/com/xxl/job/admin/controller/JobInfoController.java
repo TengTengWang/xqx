@@ -118,6 +118,8 @@ public class JobInfoController {
 		List<XxlJobInfo> jobsByDesc = xxlJobInfoDao.getJobsByDesc(desc);
 		if (jobsByDesc != null && jobsByDesc.size() > 0) {
 			JobTriggerPoolHelper.trigger(jobsByDesc.get(0).getId(), -1, I18nUtil.getString("jobconf_trigger_type_manual"));
+		} else {
+			return new ReturnT<String>("未找到任务");
 		}
 		return ReturnT.SUCCESS;
 	}

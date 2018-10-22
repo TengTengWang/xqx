@@ -2,6 +2,7 @@ package com.xxl.job.admin.core.conf;
 
 import com.xxl.job.admin.core.schedule.XxlJobDynamicScheduler;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
@@ -20,6 +21,9 @@ public class SchedulerConfig {
     @Autowired
     private DataSource dataSource;
 
+    @Value("${xxl.job.accessToken:\"\"}")
+    private String accessToken;
+    
     @Bean(name = "quartzScheduler")
     public SchedulerFactoryBean schedulerFactoryBean() {
         SchedulerFactoryBean schedulerFactoryBean = new SchedulerFactoryBean();
@@ -39,7 +43,7 @@ public class SchedulerConfig {
     public XxlJobDynamicScheduler dynamicScheduler() {
         XxlJobDynamicScheduler dynamicScheduler = new XxlJobDynamicScheduler();
         dynamicScheduler.setScheduler(schedulerFactoryBean().getScheduler());
-        dynamicScheduler.setAccessToken("");
+        dynamicScheduler.setAccessToken(accessToken);
         return dynamicScheduler;
     }
 }
