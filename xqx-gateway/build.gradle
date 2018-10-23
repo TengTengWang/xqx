@@ -16,5 +16,5 @@ dependencies {
 	// spring cloud hystrix
 	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
 	// spring cloud zipkin
-	compile "org.springframework.cloud:spring-cloud-starter-zipkin"
+	compile "org.springframework.cloud:spring-cloud-starter-zipkin:2.0.1.RELEASE"
 }

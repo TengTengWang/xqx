@@ -1,13 +1,18 @@
 package com.xqx.oauth.exception;
 
+import com.xqx.base.exception.BaseException;
 import com.xqx.base.exception.ErrorCode;
 
 /**
  * Token其他异常
  */
-public class TokenException extends Exception{
+public class TokenException extends BaseException{
 
-    private ErrorCode errorCode;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private ErrorCode errorCode;
     private String errMsg;
 
     public TokenException(ErrorCode errorCode, String errMsg){

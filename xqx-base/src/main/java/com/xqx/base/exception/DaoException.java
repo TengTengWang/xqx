@@ -1,6 +1,9 @@
 package com.xqx.base.exception;
 
 
+/**
+ * 持久化访问异常类
+ */
 public class DaoException extends RuntimeException{
 
     /**

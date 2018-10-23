@@ -21,7 +21,7 @@ public class SchedulerConfig {
     @Autowired
     private DataSource dataSource;
 
-    @Value("${xxl.job.accessToken:\"\"}")
+    @Value("${xxl.job.accessToken}")
     private String accessToken;
     
     @Bean(name = "quartzScheduler")
@@ -43,6 +43,9 @@ public class SchedulerConfig {
     public XxlJobDynamicScheduler dynamicScheduler() {
         XxlJobDynamicScheduler dynamicScheduler = new XxlJobDynamicScheduler();
         dynamicScheduler.setScheduler(schedulerFactoryBean().getScheduler());
+        if (accessToken == null) {
+        	accessToken = "";
+        }
         dynamicScheduler.setAccessToken(accessToken);
         return dynamicScheduler;
     }

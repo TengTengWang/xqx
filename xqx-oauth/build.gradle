@@ -11,10 +11,11 @@ dependencyManagement {
 dependencies {
 	compile project(':xqx-base')
 	compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-	compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
-	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
+	// spring cloud eureka
 	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
-	// spring zipkin
-	compile "org.springframework.cloud:spring-cloud-starter-zipkin"
+	// spring cloud hystrix
+	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
+	// spring cloud zipkin
+	compile "org.springframework.cloud:spring-cloud-starter-zipkin:2.0.1.RELEASE"
 	compile 'com.auth0:java-jwt:3.4.0'
 }

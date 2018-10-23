@@ -1,4 +1,4 @@
-package com.xqx.monitor.zipkin;
+package com.xqx.monitor.client;
 
 import java.io.IOException;
 import java.util.List;
@@ -58,10 +58,14 @@ public class ZipkinClient {
             "remoteEndpoint": {
                 "ipv6": "::1"
             },
-            "tags": {
-                "http.method": "GET",
-                "http.path": "/xqx-user/getAllUser"
-            }
+			"tags": {
+				"error": "Filter threw Exception",
+				"http.method": "GET",
+				"http.path": "/xqx-user/getAllUser",
+				"http.status_code": "500",
+				"mvc.controller.class": "BasicErrorController",
+				"mvc.controller.method": "error"
+			}
         },
         {
             "traceId": "bfee57a5d72faef7",

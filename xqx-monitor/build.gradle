@@ -2,6 +2,12 @@
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
+repositories {
+	mavenLocal()
+	mavenCentral()
+	jcenter()
+    maven { url 'http://unidal.org/nexus/content/repositories/releases/'}
+}
 dependencyManagement {
     imports {
         mavenBom 'org.springframework.cloud:spring-cloud-dependencies:Finchley.SR1'
@@ -9,9 +15,33 @@ dependencyManagement {
 }
 
 dependencies {
-	compile project(":xqx-base")
-	compile "org.springframework:spring-web:${springframeworkVersion}"
-	// spring zipkin
-	compile "org.springframework.cloud:spring-cloud-starter-zipkin"
-}
+	compile project(':xqx-base')
+	// com.xuxueli:xxl-job-core 依赖
+	// compile 'org.springframework:spring-context:4.3.19.RELEASE' // spring boot 含
+	compile 'org.eclipse.jetty:jetty-server:9.2.26.v20180806'
+	compile 'org.eclipse.jetty:jetty-http:9.2.26.v20180806'
+	compile 'org.eclipse.jetty:jetty-util:9.2.26.v20180806'
+	compile 'org.eclipse.jetty:jetty-io:9.2.26.v20180806'
+	
+	compile 'com.caucho:hessian:4.0.51'
+	compile 'org.apache.commons:commons-exec:1.3'
+	compile 'org.codehaus.groovy:groovy-all:2.4.15'
 
+	// spring boot
+	compile "org.springframework.boot:spring-boot-starter-web"
+	// spring redis
+	compile "org.springframework.boot:spring-boot-starter-data-redis"
+	// spring cloud hystrix
+	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
+	// spring cloud eureka
+	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
+	// spring cloud zipkin
+	compile "org.springframework.cloud:spring-cloud-starter-zipkin:2.0.1.RELEASE"
+	// 
+	// compile "com.google.inject:guice:4.2.0"
+	// compile "org.quartz-scheduler:quartz:2.3.0"
+	
+	testCompile "org.springframework.boot:spring-boot-starter-test"
+	
+    compile fileTree(dir: rootProject.rootDir, include: '**/mylibs/*.jar')
+}

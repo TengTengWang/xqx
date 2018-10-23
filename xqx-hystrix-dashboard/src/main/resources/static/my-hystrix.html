@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+<head>
+<base href="/hystrix/monitor">
+<meta charset="utf-8" />
+<title>Hystrix Monitor</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- d3 -->
+<script type="text/javascript" src="/webjars/d3js/3.4.11/d3.min.js"></script>
+<!-- Javascript to monitor and display -->
+<script type="text/javascript" src="/webjars/jquery/2.1.1/jquery.min.js"></script>
+<script type="text/javascript" src="js/jquery.tinysort.min.js"></script>
+<script type="text/javascript" src="js/tmpl.js"></script>
+<!-- HystrixCommand -->
+<script type="text/javascript"
+	src="components/hystrixCommand/hystrixCommand.js"></script>
+<!-- HystrixThreadPool -->
+<script type="text/javascript"
+	src="components/hystrixThreadPool/hystrixThreadPool.js"></script>
+<style>
+table, table tr th, table tr td {
+	border: 2px solid #888;
+}
+
+table {
+	line-height: 25px;
+	text-align: center;
+	border-collapse: collapse;
+	margin: 20px;
+}
+.clone{
+	display: none;
+}
+.name{
+	background-color: yellow;
+}
+</style>
+</head>
+<body>
+	<table class="clone">
+		<tr>
+			<td class="name" colspan="3">name</td>
+		</tr>
+		<tr>
+			<td>errorPercentage:</td>
+			<td class="errorPercentage" width="100"></td>
+			<td>Error Percentage [Timed-out + Threadpool Rejected + Failure
+				/ Total]</td>
+		</tr>
+		<tr>
+			<td>rollingCountSuccess:</td>
+			<td class="rollingCountSuccess"></td>
+			<td>"Successful Request Count"</td>
+		</tr>
+		<tr>
+			<td>rollingCountShortCircuited:</td>
+			<td class="rollingCountShortCircuited"></td>
+			<td>"Short-circuited Request Count"</td>
+		</tr>
+		<tr>
+			<td>rollingCountBadRequests:</td>
+			<td class="rollingCountBadRequests"></td>
+			<td>"Bad Request Count"</td>
+		</tr>
+		<tr>
+			<td>rollingCountFailure:</td>
+			<td class="rollingCountFailure"></td>
+			<td>"Failure Request Count"</td>
+		</tr>
+		<tr>
+			<td>rollingCountSemaphoreRejected:</td>
+			<td class="rollingCountSemaphoreRejected"></td>
+			<td>"Semaphore Rejected Request Count"</td>
+		</tr>
+		<tr>
+			<td>rollingCountThreadPoolRejected:</td>
+			<td class="rollingCountThreadPoolRejected"></td>
+			<td>"Threadpool Rejected Request Count"</td>
+		</tr>
+		<tr>
+			<td>rollingCountTimeout:</td>
+			<td class="rollingCountTimeout"></td>
+			<td>"Timed-out Request Count"</td>
+		</tr>
+	</table>
+	<script>
+		$(function() {
+			// /proxy.stream?origin=http%3A%2F%2Flocalhost%3A10092%2Fturbine.stream&delay=1000
+			var stream = "http://localhost:10092/turbine.stream?delay=5000";
+			var commandStream = "/proxy.stream?origin=" + stream;
+			// start the EventSource which will open a streaming connection to the server
+			var source = new EventSource(commandStream);
+
+			// add the listener that will process incoming events
+			source.addEventListener('message', function(e) {
+				var data = eval("(" + e.data + ")");
+				console.info(data);
+				// $("body").append($("<div>").html(data));
+				var name = data.name;
+				if(name=="meta") {
+					return;
+				}
+				if($("#"+name).length < 1){
+					var table = $(".clone").clone();
+					table.attr("id",name);
+					table.removeClass("clone");
+					$("body").append(table);
+				}
+				$("#"+name).find($(".name")).html(data.name);
+				$("#"+name).find($(".errorPercentage")).html(data.errorPercentage);
+				$("#"+name).find($(".rollingCountSuccess")).html(data.rollingCountSuccess);
+				$("#"+name).find($(".rollingCountShortCircuited")).html(data.rollingCountShortCircuited);
+				$("#"+name).find($(".rollingCountBadRequests")).html(data.rollingCountBadRequests);
+				$("#"+name).find($(".rollingCountFailure")).html(data.rollingCountFailure);
+				$("#"+name).find($(".rollingCountSemaphoreRejected")).html(data.rollingCountSemaphoreRejected);
+				$("#"+name).find($(".rollingCountThreadPoolRejected")).html(data.rollingCountThreadPoolRejected);
+				$("#"+name).find($(".rollingCountTimeout")).html(data.rollingCountTimeout);
+			}, false);
+		});
+	</script>
+</body>
+</html>

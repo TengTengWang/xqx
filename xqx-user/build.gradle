@@ -13,12 +13,12 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
 	// spring jpa
 	compile "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
-	// spring hystrix
-	compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
+	// spring cloud eureka
 	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
+	// spring cloud hystrix
 	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
-	// spring zipkin
-	compile "org.springframework.cloud:spring-cloud-starter-zipkin"
+	// spring cloud zipkin
+	compile "org.springframework.cloud:spring-cloud-starter-zipkin:2.0.1.RELEASE"
 	// alibaba druid
 	compile 'com.alibaba:druid-spring-boot-starter:1.1.9'
 	// mysql

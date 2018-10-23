@@ -41,11 +41,16 @@ subprojects{
 	
 	
 	dependencies {
+		// json
 		compile 'com.google.code.gson:gson:2.8.5'
+		
 		testCompile 'junit:junit:4.12'
 		ext.jarTree = fileTree(dir: 'libs', include: '**/*.jar')
         ext.rootProjectLibs = new File(rootProject.rootDir, 'libs').getAbsolutePath()
         ext.jarTree += fileTree(dir: rootProjectLibs, include: '**/*.jar')
         compile jarTree
+	}
+	configurations {
+    	// all*.exclude module: 'logback-classic'
 	}
 }
