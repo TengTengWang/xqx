@@ -10,7 +10,7 @@ import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 @SpringCloudApplication
 @EnableDiscoveryClient // Eureka客户端
 @EnableApolloConfig({"application","monitorConf"})
-@ComponentScan(basePackages = {"com.xqx","com.xxl"})
+@ComponentScan(basePackages = {"com.xqx.monitor","com.xqx.base"})
 public class XqxMonitorApplication {
 
 	public static void main(String[] args) {

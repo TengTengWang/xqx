@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.xqx.base.exception.BaseException;
 import com.xqx.base.exception.ErrorCode;
 import com.xqx.base.exception.ServiceException;
 import com.xqx.base.vo.ResponseMessage;
@@ -27,14 +28,18 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 
-	@RequestMapping(value = "/ex")
-	public String ex(int a) throws IOException {
+	@RequestMapping(value = "/test")
+	public String ex(int a) throws IOException, BaseException {
     	// TODO Test, Should be delete
-		if (System.currentTimeMillis() % 3 == 1) {
+		if (System.currentTimeMillis() % 4 == 2) {
+			System.out.println("BaseException");
+			throw new ServiceException(ErrorCode.DAO_NOTFOUND);
+		}    	
+		if (System.currentTimeMillis() % 4 == 1) {
 			System.out.println("runtime");
 			throw new RuntimeException("取三余一RuntimeException");
 		}    	
-		if (System.currentTimeMillis() % 3 == 0) {
+		if (System.currentTimeMillis() % 4 == 0) {
 			try {
 				System.out.println("超时180s");
 				Thread.sleep(1000 * 60 * 180);

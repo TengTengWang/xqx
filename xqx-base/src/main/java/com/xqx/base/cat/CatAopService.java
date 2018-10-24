@@ -1,8 +1,10 @@
-package com.xqx.base.aop;
+package com.xqx.base.cat;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.dianping.cat.Cat;
@@ -14,6 +16,7 @@ import com.xqx.base.vo.ResponseMessage;
 @Aspect
 @Component
 public class CatAopService {
+	private Logger logger = LoggerFactory.getLogger(CatAopService.class);
 
 	@Around(value = "@annotation(org.springframework.web.bind.annotation.RequestMapping)")
 	public Object catTransactionProcesss(ProceedingJoinPoint pjp) {
@@ -21,18 +24,20 @@ public class CatAopService {
 			Object result = pjp.proceed();
 			return result;
 		} catch (BaseException e) {
-			Cat.logEvent("BaseException", e.getClass().getName());
+			Cat.logEvent("BaseException", e.getClass().getName(), e.getErrorCode().getCode() + "", e.getErrMsg());
 			Transaction t = Cat.newTransaction("BaseException", e.getClass().getName());
 			t.setStatus(e);
+			t.addData("msg", e.getErrMsg());
 			t.complete();
-			System.out.println(e.getMessage());
+			logger.error("自定义异常", e);
 			return ResponseMessage.fail(e);
 		} catch (Throwable e) {
-			Cat.logEvent("Exception", e.getClass().getName());
-			Transaction t = Cat.newTransaction("Exception", e.getClass().getName());
+			Cat.logEvent("Throwable", e.getClass().getName(), "500", e.getMessage());
+			Transaction t = Cat.newTransaction("Throwable", e.getClass().getName());
 			t.setStatus(e);
+			t.addData("msg", e.getMessage());
 			t.complete();
-			System.out.println(e.getMessage());
+			logger.error("未知异常", e);
 			return ResponseMessage.fail(ErrorCode.UNKNOWN_ERROR.getCode(), ErrorCode.UNKNOWN_ERROR.getDescription());
 		}
 	}

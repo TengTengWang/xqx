@@ -13,7 +13,8 @@
 			<level>INFO</level>
 		</filter>
 		<encoder>
-			<pattern>[%d{HH:mm:ss.SSS}] %contextName %-5level %logger{36}: %msg%n%n</pattern>
+			<pattern>[%d{HH:mm:ss.SSS}] %contextName %-5level %logger{36}[%line]
+				%msg%n%n</pattern>
 		</encoder>
 	</appender>
 
@@ -47,7 +48,8 @@
 		<!--日志输出编码格式化 -->
 		<encoder>
 			<charset>UTF-8</charset>
-			<pattern>[%d{HH:mm:ss.SSS}] %contextName %-5level %logger{36}: %msg%n%n</pattern>
+			<pattern>[%d{HH:mm:ss.SSS}] %contextName %-5level %logger{36}[%line]
+				%msg%n%n</pattern>
 		</encoder>
 	</appender>
 	<!--debug输出到文件 -->
@@ -66,13 +68,16 @@
 		</rollingPolicy>
 		<encoder>
 			<charset>UTF-8</charset>
-			<pattern>[%d{HH:mm:ss.SSS}] %contextName %-5level %logger{36}: %msg%n%n</pattern>
+			<pattern>[%d{HH:mm:ss.SSS}] %contextName %-5level %logger{36}[%line]
+				%msg%n%n</pattern>
 		</encoder>
 	</appender>
+	<logger name="com.xqx" additivity="false">
+		<appender-ref ref="fileDebugLog" />
+	</logger>
 
 	<root level="debug">
 		<appender-ref ref="console" />
 		<appender-ref ref="fileLog" />
-		<appender-ref ref="fileDebugLog" />
 	</root>
 </configuration>

@@ -3,12 +3,19 @@ package com.xqx.monitor.bean;
 import java.util.List;
 
 /**
- * 所有sql的详细情况
+ * 所有sql监控返回字段
  */
 public class DruidSqlBean {
+	/** 返回结果状态 1：成功 */
 	private int ResultCode;
+
+	/** 当次请求ip:port */
 	private String address;
-	private List<Content> Content;
+
+	/** 当次请求地址 */
+	private String addressFull;
+	
+	private List<SqlContent> Content;
 
 	public void setResultCode(int ResultCode) {
 		this.ResultCode = ResultCode;
@@ -18,11 +25,11 @@ public class DruidSqlBean {
 		return ResultCode;
 	}
 
-	public void setContent(List<Content> Content) {
+	public void setContent(List<SqlContent> Content) {
 		this.Content = Content;
 	}
 
-	public List<Content> getContent() {
+	public List<SqlContent> getContent() {
 		return Content;
 	}
 
@@ -34,15 +41,24 @@ public class DruidSqlBean {
 		this.address = address;
 	}
 
+	public String getAddressFull() {
+		return addressFull;
+	}
+
+	public void setAddressFull(String addressFull) {
+		this.addressFull = addressFull;
+	}
+
 	@Override
 	public String toString() {
-		return "DruidSqlBean [ResultCode=" + ResultCode + ", address=" + address + ", Content=" + Content + "]";
+		return "DruidSqlBean [ResultCode=" + ResultCode + ", address=" + address + ", addressFull=" + addressFull
+				+ ", Content=" + Content + "]";
 	}
 
 	/**
 	 * 单句sql执行的详情情况
 	 */
-	public class Content {
+	public class SqlContent {
 		private int ExecuteAndResultSetHoldTime;
 		private List<Integer> EffectedRowCountHistogram;
 		private String LastErrorMessage;

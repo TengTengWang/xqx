@@ -1,4 +1,4 @@
-package com.xqx.monitor.conf;
+package com.xqx.base.cat;
 
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
