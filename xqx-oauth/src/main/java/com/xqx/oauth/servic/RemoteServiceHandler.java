@@ -47,9 +47,14 @@ public class RemoteServiceHandler {
         MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
         paramMap.add("name", name);
         paramMap.add("password", password);
-
-        String body = remoteServiceHandler.restTemplate.postForEntity("http://XQX-USER/getUser",paramMap, String.class).getBody();
-
+        String body = "";
+        String serverName = "XQX-USER";
+        try {
+	        body = remoteServiceHandler.restTemplate.postForEntity("http://" + serverName + "/getUser",paramMap, String.class).getBody();
+        }catch (IllegalStateException e) {
+        	logger.error("远程访问失败：{}", e.getMessage());
+            throw new CallRemoteServiceException(ErrorCode.REMOTE_EXCEPTION, "微服务" + serverName + "未启动");
+		}
         logger.info("执行登陆结果 == " + body);
         ResponseMessage<?> responseMessage = gson.fromJson(body, ResponseMessage.class);
         if (responseMessage.getStatus() != 0) {
