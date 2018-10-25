@@ -51,9 +51,6 @@ public class CollectHystrixHandler extends IJobHandler {
 		for (String hystrixAddress : hystrixAddresses) {
 			try {
 				getHystrixData(hystrixAddress);
-
-				// 拉取hystrix api成功则记录
-				Cat.logEvent("monitorPull", "pullHystrixApiSuccess");
 				return ReturnT.SUCCESS;
 			} catch (Exception e) {
 				logger.error("统计hystrix出错", e);
@@ -72,6 +69,7 @@ public class CollectHystrixHandler extends IJobHandler {
 		String proxyUrl = "http://" + hystrixAddress + "/turbine.stream?delay="
 				+ monitorConf.getHystrixStreamSpanTime();
 
+		Transaction t = Cat.newTransaction("monitorHystrix", "hystrix");
 		// http 请求读取流
 		HttpGet httpget = null;
 		InputStream is = null;
@@ -81,6 +79,7 @@ public class CollectHystrixHandler extends IJobHandler {
 			HttpResponse httpResponse = client.execute(httpget);
 			int statusCode = httpResponse.getStatusLine().getStatusCode();
 			if (statusCode == HttpStatus.SC_OK) {
+				Cat.logEvent("monitorPull", "pullHystrixSuccess", Event.SUCCESS, hystrixAddress);
 				logger.debug("hytrix拉取到数据");
 				is = httpResponse.getEntity().getContent();
 				OutputStream os = new MyByteArrayOutputStream();
@@ -101,7 +100,9 @@ public class CollectHystrixHandler extends IJobHandler {
 				}
 				os.close();
 			}
+			t.setStatus(Transaction.SUCCESS);
 		} finally {
+			t.complete();
 			if (httpget != null) {
 				try {
 					httpget.abort();

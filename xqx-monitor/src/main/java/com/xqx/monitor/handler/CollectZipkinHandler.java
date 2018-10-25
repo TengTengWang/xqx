@@ -11,6 +11,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import com.dianping.cat.Cat;
+import com.dianping.cat.message.Event;
+import com.dianping.cat.message.Transaction;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xqx.base.util.HttpClientUtils;
@@ -104,35 +106,46 @@ public class CollectZipkinHandler extends IJobHandler {
 
 	private void parseData(List<List<ZipkinSpanBean>> zipkinSpan, long interval) {
 
-		// 拉取zipkin api成功则记录
-		Cat.logEvent("monitorPull", "pullZipkinApiSuccess");
-		if (zipkinSpan == null) {
-			return;
-		}
-		logger.debug("zipkin拉取到{}秒之前{}个数据", interval / 1000, zipkinSpan.size());
+		Transaction t = Cat.newTransaction("monitorZipkin", "zipkin");
+		try {
+			// 拉取zipkin api成功则记录
+			Cat.logEvent("monitorPull", "pullZipkinApiSuccess");
+			if (zipkinSpan == null) {
+				return;
+			}
+			logger.debug("zipkin拉取到{}秒之前{}个数据", interval / 1000, zipkinSpan.size());
 
-		for (List<ZipkinSpanBean> spans : zipkinSpan) {
-			for (ZipkinSpanBean span : spans) {
-				String parentId = span.getParentId();
-				// 判断是否为客户端请求地址
-				if (StringUtils.isBlank(parentId)) {
-					// TODO 写入CAT逻辑
-					/*
-					 * 1、若报错则写入 2、若执行时间超过3000ms则写入
-					 */
-					// 执行错误
-					if (span.getTags() != null && span.getTags().containsKey("error")) {
-						Cat.logEvent("zipkinUrlRequest", span.getLocalEndpoint().serviceName() + "_error", "500", null);
-						logger.debug(span.getLocalEndpoint().serviceName() + ", " + span.getTags().get("error"));
-					} else {
-						// 若执行时间超过3000ms则写入
-						if (span.getDuration() > monitorConf.getZipkinLongTime()) {
-							Cat.logEvent("zipkinUrlRequest", span.getLocalEndpoint().serviceName() + "_timeout");
-							logger.debug("{}执行时间{}", span.getLocalEndpoint().serviceName(), span.getDuration());
+			for (List<ZipkinSpanBean> spans : zipkinSpan) {
+				for (ZipkinSpanBean span : spans) {
+					String parentId = span.getParentId();
+					// 判断是否为客户端请求地址
+					if (StringUtils.isBlank(parentId)) {
+						// TODO 写入CAT逻辑
+						/*
+						 * 1、若报错则写入 2、若执行时间超过3000ms则写入
+						 */
+						// 执行错误
+						if (span.getTags() != null && span.getTags().containsKey("error")) {
+							Cat.logEvent("zipkinUrlRequest",
+									span.getLocalEndpoint().serviceName() + span.getTags().get("http.path") + "_error",
+									"500", span.getTags().get("error"));
+							logger.debug(span.getLocalEndpoint().serviceName() + ", " + span.getTags().get("error"));
+						} else {
+							// 若执行时间超过3000ms则写入
+							if (span.getDuration()/1000 > monitorConf.getZipkinLongTime()) {
+								Cat.logEvent("zipkinUrlRequest",
+										span.getLocalEndpoint().serviceName() + span.getTags().get("http.path")
+												+ "_timeout",
+										Event.SUCCESS, "requestTime=" + span.getDuration() + "ms");
+								logger.debug("{}执行时间{}", span.getLocalEndpoint().serviceName(), span.getDuration());
+							}
 						}
 					}
 				}
 			}
+			t.setStatus(Transaction.SUCCESS);
+		} finally {
+			t.complete();
 		}
 	}
 }

@@ -68,6 +68,7 @@ public class CollectDruidHandler extends IJobHandler {
 					logger.error("访问druid服务" + druidAddress + "失败", e);
 				}
 			}
+			t.setStatus(Transaction.SUCCESS);
 		} finally {
 			t.complete();
 		}
@@ -119,7 +120,7 @@ public class CollectDruidHandler extends IJobHandler {
 			for (SqlContent c : content) {
 				if (c.getMaxTimespan() > monitorConf.getDruidSqlMaxTime()) {
 					// 最慢执行时间>100ms则记录
-					Cat.logEvent("DruidMaxTimespan", bean.getAddress(), Event.SUCCESS,
+					Cat.logEvent("DruidMaxTimespan", bean.getAddress() + "?id=" + c.getID(), Event.SUCCESS,
 							bean.getAddress() + "， maxTimespan=" + c.getMaxTimespan() + "ms," + c.getSQL());
 					logger.debug("druid监听sql响应，http://{}，sqlId={}，sql执行过慢用时{}ms，设置慢查询时间为{}ms，sql：{}", bean.getAddress(),
 							c.getID(), c.getMaxTimespan(), monitorConf.getDruidSqlMaxTime(), c.getSQL());
@@ -128,7 +129,7 @@ public class CollectDruidHandler extends IJobHandler {
 				if (c.getErrorCount() > 0) {
 					// sql执行错误次数>0
 					for (int i = 0; i < c.getErrorCount(); i++) {
-						Cat.logEvent("DruidSqlErrorCount", c.getID() + "", Event.SUCCESS,
+						Cat.logEvent("DruidSqlErrorCount", bean.getAddress() + "?id=" + c.getID(), Event.SUCCESS,
 								bean.getAddress() + " sql:" + c.getSQL());
 					}
 					logger.debug("druid监听sql响应，http://{}，sqlId={}，sql执行错误次数{}，sql：{}", bean.getAddress(), c.getID(),
