@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Event;
+import com.dianping.cat.message.Transaction;
 import com.google.gson.Gson;
 import com.xqx.base.util.HttpClientUtils;
 import com.xqx.monitor.bean.DruidSqlBean;
@@ -41,27 +42,34 @@ public class CollectDruidHandler extends IJobHandler {
 
 	@Override
 	public ReturnT<String> execute(String param) {
-		List<String> druidAddresses = monitorConf.getDruidAddresses();
-		for (String druidAddress : druidAddresses) {
-			DruidSqlBean sqlData = null;
-			DruidUriBean uriData = null;
-			try {
-				// 获取sql监控数据，解析sql监控数据，并埋点
-				sqlData = getSqlData(druidAddress);
-				parseForSqlData(sqlData);
+		Transaction t = Cat.newTransaction("monitorDruid", "druid");
+		try {
+			List<String> druidAddresses = monitorConf.getDruidAddresses();
+			for (String druidAddress : druidAddresses) {
+				DruidSqlBean sqlData = null;
+				DruidUriBean uriData = null;
+				try {
+					// 获取sql监控数据，解析sql监控数据，并埋点
+					sqlData = getSqlData(druidAddress);
+					parseForSqlData(sqlData);
+					// 拉取druid api成功则记录
+					Cat.logEvent("monitorPull", "pullDruidSqlSuccess", Event.SUCCESS, druidAddress);
 
-				// 获取uri监控数据，解析uri监控数据，并埋点
-				uriData = getUriData(druidAddress);
-				parseForUriData(uriData);
+					// 获取uri监控数据，解析uri监控数据，并埋点
+					uriData = getUriData(druidAddress);
+					parseForUriData(uriData);
 
-				// TODO 清空druid监控缓存
+					// TODO 清空druid监控缓存
 //				resetDruid(druidAddress);
-				
-				// 拉取druid api成功则记录
-				Cat.logEvent("monitorPull", "pullDruidApiSuccess", Event.SUCCESS, druidAddress);
-			} catch (Exception e) {
-				logger.error("访问druid服务" + druidAddress + "失败", e);
+
+					// 拉取druid api成功则记录
+					Cat.logEvent("monitorPull", "pullDruidUriSuccess", Event.SUCCESS, druidAddress);
+				} catch (Exception e) {
+					logger.error("访问druid服务" + druidAddress + "失败", e);
+				}
 			}
+		} finally {
+			t.complete();
 		}
 		return ReturnT.SUCCESS;
 	}
@@ -112,13 +120,19 @@ public class CollectDruidHandler extends IJobHandler {
 				if (c.getMaxTimespan() > monitorConf.getDruidSqlMaxTime()) {
 					// 最慢执行时间>100ms则记录
 					Cat.logEvent("DruidMaxTimespan", bean.getAddress(), Event.SUCCESS,
-							"executeTime=" + c.getMaxTimespan() + "ms," + c.getSQL());
+							bean.getAddress() + "， maxTimespan=" + c.getMaxTimespan() + "ms," + c.getSQL());
+					logger.debug("druid监听sql响应，http://{}，sqlId={}，sql执行过慢用时{}ms，设置慢查询时间为{}ms，sql：{}", bean.getAddress(),
+							c.getID(), c.getMaxTimespan(), monitorConf.getDruidSqlMaxTime(), c.getSQL());
 				}
 
 				if (c.getErrorCount() > 0) {
 					// sql执行错误次数>0
-					Cat.logEvent("DruidSqlErrorCount", bean.getAddress(), Event.SUCCESS,
-							"sqlErrorCount=" + c.getErrorCount());
+					for (int i = 0; i < c.getErrorCount(); i++) {
+						Cat.logEvent("DruidSqlErrorCount", c.getID() + "", Event.SUCCESS,
+								bean.getAddress() + " sql:" + c.getSQL());
+					}
+					logger.debug("druid监听sql响应，http://{}，sqlId={}，sql执行错误次数{}，sql：{}", bean.getAddress(), c.getID(),
+							c.getErrorCount(), c.getSQL());
 				}
 			}
 		} else {
@@ -140,6 +154,8 @@ public class CollectDruidHandler extends IJobHandler {
 					// 慢请求则埋点记录
 					Cat.logEvent("DruidRequestTimeMax", bean.getAddress(), Event.SUCCESS,
 							"requestTime=" + c.getRequestTimeMillisMax() + "ms," + c.getURI());
+					logger.debug("druid监听接口响应，http://{}{}接口响应过慢用时{}ms超过设置的响应时间{}ms", bean.getAddress(), c.getURI(),
+							c.getRequestTimeMillisMax(), monitorConf.getZipkinLongTime());
 				}
 			}
 		} else {
