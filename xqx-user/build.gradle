@@ -21,6 +21,8 @@ dependencies {
 	compile "org.springframework.cloud:spring-cloud-starter-zipkin:2.0.1.RELEASE"
 	// alibaba druid
 	compile 'com.alibaba:druid-spring-boot-starter:1.1.9'
+	// spring boot actuator
+	compile "org.springframework.boot:spring-boot-starter-actuator"
 	// mysql
 	compile "mysql:mysql-connector-java:${mysqlVersion}"
 }

@@ -1,4 +1,4 @@
-package com.xqx.monitor.bean;
+package com.xqx.monitor.pojo;
 
 public class HystrixThreadPoolBean {
 

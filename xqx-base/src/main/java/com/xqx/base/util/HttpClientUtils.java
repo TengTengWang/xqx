@@ -4,6 +4,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -37,10 +40,11 @@ import org.apache.http.util.EntityUtils;
  */
 public class HttpClientUtils {
 	/** 超时时间 */
-	private static RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(120000)
-			.setConnectTimeout(120000).setConnectionRequestTimeout(120000).build();
+	private static RequestConfig requestConfig = RequestConfig.custom().setSocketTimeout(60000).setConnectTimeout(60000)
+			.setConnectionRequestTimeout(60000).build();
 
 	private static HttpClientUtils instance = null;
+	private Map<String, String> header = null;
 
 	private HttpClientUtils() {
 	}
@@ -61,7 +65,12 @@ public class HttpClientUtils {
 	 */
 	private String sendHttpReq(HttpRequestBase req) throws IOException {
 		String responseContent = "";
-
+		if (header != null && header.size() > 0) {
+			for (String key : header.keySet()) {
+				req.setHeader(key, header.get(key));
+			}
+			header = null;
+		}
 		req.setConfig(requestConfig);
 		try (CloseableHttpClient httpClient = HttpClients.createDefault();
 				CloseableHttpResponse response = httpClient.execute(req);) {
@@ -261,5 +270,40 @@ public class HttpClientUtils {
 		stringEntity.setContentType("application/json");
 		httpPut.setEntity(stringEntity);
 		return sendHttpReq(httpPut);
+	}
+
+	public InputStream getStreamByGet(String url) throws IOException {
+		try {
+			// 创建url
+			URL realurl = new URL(url);
+			// 打开连接
+			URLConnection connection = realurl.openConnection();
+			// 设置通用的请求属性
+			connection.setRequestProperty("accept", "*/*");
+			connection.setRequestProperty("connection", "Keep-Alive");
+			connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+			// 建立连接
+			connection.connect();
+			// 获取所有响应头字段
+//			Map<String, List<String>> map = connection.getHeaderFields();
+			// 遍历所有的响应头字段，获取到cookies等
+//			for (String key : map.keySet()) {
+//				System.out.println(key + "--->" + map.get(key));
+//			}
+//			System.out.println("-------------------------");
+			// 定义 BufferedReader输入流来读取URL的响应
+			InputStream inputStream = connection.getInputStream();
+			return inputStream;
+		} catch (IOException e) {
+			throw e;
+		}
+	}
+
+	public Map<String, String> getHeader() {
+		return header;
+	}
+
+	public void setHeader(Map<String, String> header) {
+		this.header = header;
 	}
 }

@@ -26,16 +26,31 @@ public class GlobalExceptionHandler {
 	 * @param e
 	 * @return
 	 */
-	@ExceptionHandler(value = Exception.class)
+	@ExceptionHandler(value = Throwable.class)
 	@ResponseBody
-	public ResponseMessage<String> defaultErrorHandler(Exception e) {
+	public ResponseMessage<String> defaultErrorHandler(Throwable e) {
 		log.debug(e.getMessage());
 		Transaction t = Cat.newTransaction(e.getClass().getName(), e.getClass().getSimpleName());
 		t.setStatus(e);
 		t.complete();
-		return ResponseMessage.fail(ErrorCode.UNKNOWN_ERROR.getCode(), ErrorCode.UNKNOWN_ERROR.getDescription());
+		return ResponseMessage.fail(ErrorCode.UNKNOWN_ERROR.getCode(), e.getMessage());
 	}
 
+	/**
+	 * 捕获运行时异常
+	 * 
+	 * @param e
+	 * @return
+	 */
+	@ExceptionHandler(value = RuntimeException.class)
+	@ResponseBody
+	public ResponseMessage<String> runtimeExceptionHandler(RuntimeException e) {
+		log.debug("全局捕获", e);
+		Transaction t = Cat.newTransaction(e.getClass().getName(), e.getClass().getSimpleName());
+		t.setStatus(e);
+		t.complete();
+		return ResponseMessage.fail(ErrorCode.UNKNOWN_ERROR.getCode(), e.getMessage());
+	}
 	/**
 	 * 捕获自定义异常
 	 * 
@@ -45,13 +60,13 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = BaseException.class)
 	@ResponseBody
 	public ResponseMessage<String> baseExceptionHandler(BaseException e) {
+		// TODO debug 开关
 		log.debug(e.getErrMsg());
 		Transaction t = Cat.newTransaction(e.getClass().getName(), e.getClass().getSimpleName());
 		t.setStatus(e);
 		t.complete();
 		return ResponseMessage.fail(e);
 	}
-
 	/**
 	 * 捕获持久层异常
 	 * 

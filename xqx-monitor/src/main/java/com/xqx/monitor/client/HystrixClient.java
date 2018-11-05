@@ -11,8 +11,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.junit.Test;
 
 import com.google.gson.Gson;
-import com.xqx.monitor.bean.HystrixServiceStatusBean;
-import com.xqx.monitor.bean.HystrixThreadPoolBean;
+import com.xqx.monitor.pojo.HystrixServiceStatusBean;
+import com.xqx.monitor.pojo.HystrixThreadPoolBean;
 
 public class HystrixClient {
 	@Test

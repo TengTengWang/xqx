@@ -1,4 +1,4 @@
-package com.xqx.monitor.bean;
+package com.xqx.monitor.conf;
 
 import java.util.List;
 
@@ -26,6 +26,10 @@ public class MonitorConf {
 	@Value("${monitor.druid.address}")
 	private List<String> druidAddresses;
 
+	/** actuator客户端地址：127.0.0.1:10051 */
+	@Value("${monitor.actuator.address}")
+	private List<String> actuatorAddresses;
+
 	/** 若请求大于此时间，则埋点为慢请求,默认3000ms */
 	@Value("${monitor.zipkin.longTime:3000}")
 	private int zipkinLongTime;
@@ -49,6 +53,16 @@ public class MonitorConf {
 	/** hystrix统计错误百分比，超过此值则埋点，默认10。1分钟内该值均值超过N则报警 */
 	@Value("${monitor.hystrix.errorPercentage:10}")
 	private int hystrixErrorPercentage;
+
+	/** 硬盘空间剩余量，若低于此值则埋点，0则表示全埋点,单位：M */
+	@Value("${monitor.actuator.diskSpaceFree:0}")
+	private int actuatorDiskSpaceFree;
+	/** 可用内存，若小于此值则埋点，0则表示全埋点,单位：M */
+	@Value("${monitor.actuator.jvmMemoryFree:0}")
+	private int actuatorJvmMemoryFree;
+	/** 系统cpu使用率0.0000-1.0000，若大于此值则埋点，0则表示全埋点 */
+	@Value("${monitor.actuator.systemCpuUsage:0}")
+	private int actuatorSystemCpuUsage;
 
 	public List<String> getZipkinAddresses() {
 		return zipkinAddresses;
@@ -130,13 +144,48 @@ public class MonitorConf {
 		this.hystrixErrorPercentage = hystrixErrorPercentage;
 	}
 
+	public List<String> getActuatorAddresses() {
+		return actuatorAddresses;
+	}
+
+	public void setActuatorAddresses(List<String> actuatorAddresses) {
+		this.actuatorAddresses = actuatorAddresses;
+	}
+
+	public int getActuatorDiskSpaceFree() {
+		return actuatorDiskSpaceFree;
+	}
+
+	public void setActuatorDiskSpaceFree(int actuatorDiskSpaceFree) {
+		this.actuatorDiskSpaceFree = actuatorDiskSpaceFree;
+	}
+
+	public int getActuatorJvmMemoryFree() {
+		return actuatorJvmMemoryFree;
+	}
+
+	public void setActuatorJvmMemoryFree(int actuatorJvmMemoryFree) {
+		this.actuatorJvmMemoryFree = actuatorJvmMemoryFree;
+	}
+
+	public int getActuatorSystemCpuUsage() {
+		return actuatorSystemCpuUsage;
+	}
+
+	public void setActuatorSystemCpuUsage(int actuatorSystemCpuUsage) {
+		this.actuatorSystemCpuUsage = actuatorSystemCpuUsage;
+	}
+
 	@Override
 	public String toString() {
 		return "MonitorConf [monitorConf=" + monitorConf + ", zipkinAddresses=" + zipkinAddresses
-				+ ", hystrixAddresses=" + hystrixAddresses + ", druidAddresses=" + druidAddresses + ", zipkinLongTime="
-				+ zipkinLongTime + ", zipkinStartSpanTime=" + zipkinStartSpanTime + ", druidSqlMaxTime="
-				+ druidSqlMaxTime + ", hystrixStreamSpanTime=" + hystrixStreamSpanTime + ", hystrixStreamContinueTime="
-				+ hystrixStreamContinueTime + ", hystrixErrorPercentage=" + hystrixErrorPercentage + "]";
+				+ ", hystrixAddresses=" + hystrixAddresses + ", druidAddresses=" + druidAddresses
+				+ ", actuatorAddresses=" + actuatorAddresses + ", zipkinLongTime=" + zipkinLongTime
+				+ ", zipkinStartSpanTime=" + zipkinStartSpanTime + ", druidSqlMaxTime=" + druidSqlMaxTime
+				+ ", hystrixStreamSpanTime=" + hystrixStreamSpanTime + ", hystrixStreamContinueTime="
+				+ hystrixStreamContinueTime + ", hystrixErrorPercentage=" + hystrixErrorPercentage
+				+ ", actuatorDiskSpaceFree=" + actuatorDiskSpaceFree + ", actuatorJvmMemoryFree="
+				+ actuatorJvmMemoryFree + ", actuatorSystemCpuUsage=" + actuatorSystemCpuUsage + "]";
 	}
 
 }
