@@ -1,9 +1,12 @@
 rootProject.name = 'xqx'
 
 include 'xqx-base'
-
+include 'xqx-gateway'
+include 'xqx-oauth'
+include 'xqx-user'
+include 'xqx-user-data'
+include 'xqx-turbine'
+include 'xqx-monitor'
+include 'xqx-hystrix-dashboard'
 include 'xxl-job-admin'
 include 'xxl-job-core'
-
-
-
