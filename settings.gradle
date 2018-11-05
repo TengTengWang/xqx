@@ -8,6 +8,5 @@ include 'xqx-user-data'
 include 'xqx-turbine'
 include 'xqx-monitor'
 include 'xqx-hystrix-dashboard'
-include 'xxl-job-admisn'
-
+include 'xxl-job-admidsn'
 include 'xxl-job-core'
