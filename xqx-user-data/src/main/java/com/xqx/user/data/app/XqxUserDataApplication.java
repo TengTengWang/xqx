@@ -12,7 +12,7 @@ import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 @SpringCloudApplication
 @EnableApolloConfig
 @EnableCaching// 开启缓存，需要显示的指定
-@ComponentScan(basePackages = "com.xqx.user.data")
+@ComponentScan(basePackages = {"com.xqx.user.data", "com.xqx.base"})
 public class XqxUserDataApplication {
 
 	public static void main(String[] args) {
