@@ -31,7 +31,6 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 
 	@Override
 	@Cacheable(value = "user", keyGenerator = "wiselyKeyGenerator", sync = true)
-	@HystrixCommand(fallbackMethod = "getUserFallback")
 	public UserDTO getUser(String name, String password) throws CallRemoteServiceException {
 		// 调用登陆接口
         MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
@@ -53,7 +52,6 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 	}
 
 	@Override
-	@HystrixCommand(fallbackMethod = "doAddBlackListFallback")
 	public boolean doForbidden(Long userID) throws CallRemoteServiceException {
 		// 调用登陆接口
         MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
@@ -71,7 +69,6 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 	}
 	
 	@Override
-	@HystrixCommand(fallbackMethod = "doRemoveBlackListFallback")
 	public boolean doUnforbidden(Long userID) throws CallRemoteServiceException {
 		// 调用登陆接口
         MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
@@ -87,20 +84,5 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
         return (Boolean)responseMessage.getData();
 	}
 
-
-	protected UserDTO getUserFallback(String name, String password,Throwable throwable) {
-		logger.error("执行登陆失败 " + throwable.getLocalizedMessage());
-		return null;
-    }
-
-	protected boolean doAddBlackListFallback(Throwable throwable) {
-		logger.error("冻结用户失败! " + throwable.getLocalizedMessage());
-		return false;
-    }
-	
-	protected boolean doRemoveBlackListFallback(Throwable throwable) {
-		logger.error("解冻用户失败! " + throwable.getLocalizedMessage());
-		return false;
-    }
 
 }

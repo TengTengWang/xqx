@@ -15,6 +15,7 @@ public enum ErrorCode {
     DAO_ERROR(4001, "数据持久层异常"),
     DAO_NOTFOUND(4004, "未检查到任何数据"),
     SERVICE_ERROR(5001, "服务层异常"),
+    HYSTRIX_FALLBACK(8001, "短路降级"),
     TIME_OUT(9001, "请求超时");
 
 
