@@ -6,10 +6,10 @@ import com.xqx.base.pojo.dto.UserDTO;
 
 public interface IRemoteUserDao {
 	
-	public UserDTO getUser(String name,String password) throws CallRemoteServiceException;
+	public UserDTO findUserByNameAndPassword(String name,String password) throws CallRemoteServiceException;
 	
-	public boolean doForbidden(Long userID) throws CallRemoteServiceException;
+	public boolean doForbiddenByUserId(Long userID) throws CallRemoteServiceException;
 	
-	public boolean doUnforbidden(Long userID) throws CallRemoteServiceException;
+	public boolean doUnforbiddenByUserId(Long userID) throws CallRemoteServiceException;
 
 }

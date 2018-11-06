@@ -14,9 +14,9 @@ public interface ITokenService {
 	// 黑名单，设置初始容量
     static final Set<Long> BLACK_LIST = new HashSet<>(16000);
 
-    Token createToken(String name, String password) throws ServiceException;
+    Token createTokenByNameAndPassword(String name, String password) throws ServiceException;
 
-    Token createToken(UserDTO userDTO) throws ServiceException;
+    Token createTokenByUser(UserDTO userDTO) throws ServiceException;
     
     Token refreshToken(String oldRefreshToken) throws ServiceException;
 

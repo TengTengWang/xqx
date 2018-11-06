@@ -37,14 +37,14 @@ public class TokenServicImpl implements ITokenService {
     private Long exprieTimeMax;
 
     @Autowired
-    IRemoteUserDao remoteUserDao;
+    private IRemoteUserDao remoteUserDao;
     
 
     /**
      * 根据用户输入身份信息生成TOKEN
      */
     @Override
-    public Token createToken(String name, String password) throws ServiceException {
+    public Token createTokenByNameAndPassword(String name, String password) throws ServiceException {
         if (Strings.isNullOrEmpty(name)) {
             throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数Name不能为空");
         }
@@ -54,20 +54,20 @@ public class TokenServicImpl implements ITokenService {
 
         try {
         	// 通过User微服务检查登陆
-            UserDTO userDTO = remoteUserDao.getUser(name, password);
+            UserDTO userDTO = remoteUserDao.findUserByNameAndPassword(name, password);
             if(userDTO.getForbidden()) {
             	BLACK_LIST.add(userDTO.getId());
             	throw new ServiceException(ErrorCode.TOKEN_BLACLIST, ErrorCode.TOKEN_BLACLIST.getDescription());
             }
             // 生成Token
-            return createToken(userDTO);
+            return createTokenByUser(userDTO);
         } catch (CallRemoteServiceException e) {
             throw new ServiceException(e,e.getErrorCode(),e.getErrMsg());
         } 
     }
 
     @Override
-    public Token createToken(UserDTO userDTO) throws ServiceException {
+    public Token createTokenByUser(UserDTO userDTO) throws ServiceException {
         if (userDTO == null) {
             throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数userInfo不能为空");
         }
@@ -124,7 +124,7 @@ public class TokenServicImpl implements ITokenService {
     public void addBlackList(Long userId) throws ServiceException{
     	try {
 			BLACK_LIST.add(userId);
-			remoteUserDao.doForbidden(userId);
+			remoteUserDao.doForbiddenByUserId(userId);
 		} catch(CallRemoteServiceException e) {
 			throw new ServiceException(e, e.getErrorCode(), e.getErrMsg());
 		} catch (Exception e) {
@@ -136,7 +136,7 @@ public class TokenServicImpl implements ITokenService {
     public void removeBlackList(Long userId) throws ServiceException{
     	try {
 			BLACK_LIST.remove(userId);
-			remoteUserDao.doUnforbidden(userId);
+			remoteUserDao.doUnforbiddenByUserId(userId);
 		} catch(CallRemoteServiceException e) {
 			throw new ServiceException(e, e.getErrorCode(), e.getErrMsg());
 		} catch (Exception e) {

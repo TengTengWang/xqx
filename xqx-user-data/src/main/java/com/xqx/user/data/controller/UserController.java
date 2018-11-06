@@ -25,11 +25,11 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
-    @RequestMapping(value = "/getUser", method = RequestMethod.POST)
+    @RequestMapping(value = "/findUserByNameAndPassword", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseMessage<UserDTO> getUser(@RequestParam("name")String name,@RequestParam("password")String password){
+    public ResponseMessage<UserDTO> findUserByNameAndPassword(@RequestParam("name")String name,@RequestParam("password")String password){
 		try {
-			UserDTO user = userService.getUser(name, password);
+			UserDTO user = userService.getUserByNameAndPassword(name, password);
 			
 			logger.info(user.toString());
 			return ResponseMessage.success(user);
@@ -38,11 +38,11 @@ public class UserController {
 		}
     }
     
-    @RequestMapping(value = "/doForbidden")
+    @RequestMapping(value = "/doForbiddenByUserId")
     @ResponseBody
-    public ResponseMessage<Boolean> doForbidden(@RequestParam("id")Long id){
+    public ResponseMessage<Boolean> doForbiddenByUserId(@RequestParam("id")Long id){
 		try {
-			UserDTO user = userService.doForbidden(id);
+			UserDTO user = userService.doForbiddenById(id);
 			if(user != null) {
 				return ResponseMessage.success(true);
 			}else {
@@ -53,11 +53,11 @@ public class UserController {
 		}
     }
     
-    @RequestMapping(value = "/doUnforbidden")
+    @RequestMapping(value = "/doUnforbiddenByUserId")
     @ResponseBody
-    public ResponseMessage<Boolean> doUnforbidden(@RequestParam("id")Long id){
+    public ResponseMessage<Boolean> doUnforbiddenByUserId(@RequestParam("id")Long id){
 		try {
-			UserDTO user = userService.doUnforbidden(id);
+			UserDTO user = userService.doUnforbiddenById(id);
 			if(user != null) {
 				return ResponseMessage.success(true);
 			}else {
@@ -68,11 +68,11 @@ public class UserController {
 		}
     }
     
-    @RequestMapping(value = "/listUser")
+    @RequestMapping(value = "/listAllUser")
     @ResponseBody
-    public ResponseMessage<List<UserDTO>> listUser(){
+    public ResponseMessage<List<UserDTO>> listAllUser(){
 		try {
-			List<UserDTO> userList = userService.listUser();
+			List<UserDTO> userList = userService.listAllUser();
 			logger.info(userList.toString());
 			return ResponseMessage.success(userList);
 		} catch (ServiceException e) {

@@ -62,7 +62,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @Cacheable(sync = true)
-    public UserDTO getUser(String name, String password) throws ServiceException {
+    public UserDTO getUserByNameAndPassword(String name, String password) throws ServiceException {
         if(name == null){
             throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT,"参数Name不能为Null");
         }
@@ -83,14 +83,14 @@ public class UserServiceImpl implements IUserService {
     }
 
     //@Cacheable(sync = true)
-    public List<UserDTO> listUser() throws ServiceException {
+    public List<UserDTO> listAllUser() throws ServiceException {
     	List<UserDO> listUserDO = userRepostory.findAll();
     	return POJOConverter.toUserDTOList(listUserDO);
     }
 
     @Override
     @Cacheable(sync = true)
-    public Long countUser(String name) throws ServiceException {
+    public Long countUserByName(String name) throws ServiceException {
     	if(name == null){
             throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT,"参数Name不能为Null");
         }
@@ -102,7 +102,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     @CacheEvict	// @CacheEvict 应用到删除数据的方法上，调用方法时会从缓存中删除对应key的数据
-    public void removeUser(Long id) throws ServiceException {
+    public void removeUserById(Long id) throws ServiceException {
     	if(id == null) {
     		throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT,"参数ID："+id+"不能为Null");
     	}
@@ -111,7 +111,7 @@ public class UserServiceImpl implements IUserService {
     
     
     @Override
-    public UserDTO doForbidden(Long id)throws ServiceException{
+    public UserDTO doForbiddenById(Long id)throws ServiceException{
     	try {
     		UserDO userDO = userRepostory.getOne(id);
 			userDO.setForbidden(true);
@@ -125,7 +125,7 @@ public class UserServiceImpl implements IUserService {
     }
     
     @Override
-    public UserDTO doUnforbidden(Long id)throws ServiceException{
+    public UserDTO doUnforbiddenById(Long id)throws ServiceException{
     	try {
     		UserDO userDO = userRepostory.getOne(id);
 			if(userDO.getForbidden()) {

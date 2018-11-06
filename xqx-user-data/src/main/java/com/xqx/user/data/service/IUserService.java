@@ -25,7 +25,7 @@ public interface IUserService {
 	 * @param id
 	 * @throws ServiceException
 	 */
-    void removeUser(Long id) throws ServiceException;
+    void removeUserById(Long id) throws ServiceException;
 
     /**
      * 获取单独对象
@@ -42,14 +42,14 @@ public interface IUserService {
      * @return
      * @throws ServiceException
      */
-    UserDTO getUser(String name,String password) throws ServiceException;
+    UserDTO getUserByNameAndPassword(String name,String password) throws ServiceException;
 
     /**
      * 获取所有用户
      * @return
      * @throws ServiceException
      */
-    List<UserDTO> listUser() throws ServiceException;
+    List<UserDTO> listAllUser() throws ServiceException;
 
     /**
      * 统计用户数量
@@ -57,7 +57,7 @@ public interface IUserService {
      * @return
      * @throws ServiceException
      */
-    Long countUser(String name) throws ServiceException;
+    Long countUserByName(String name) throws ServiceException;
     
     /**
      * 冻结用户
@@ -65,7 +65,7 @@ public interface IUserService {
      * @return
      * @throws ServiceException
      */
-    UserDTO doForbidden(Long id)throws ServiceException; 
+    UserDTO doForbiddenById(Long id)throws ServiceException; 
     
     /**
      * 解冻用户
@@ -73,5 +73,5 @@ public interface IUserService {
      * @return
      * @throws ServiceException
      */
-    UserDTO doUnforbidden(Long id)throws ServiceException; 
+    UserDTO doUnforbiddenById(Long id)throws ServiceException; 
 }

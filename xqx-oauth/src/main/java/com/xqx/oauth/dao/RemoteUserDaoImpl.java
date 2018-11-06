@@ -31,14 +31,14 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 
 	@Override
 	@Cacheable(value = "user", keyGenerator = "wiselyKeyGenerator", sync = true)
-	public UserDTO getUser(String name, String password) throws CallRemoteServiceException {
+	public UserDTO findUserByNameAndPassword(String name, String password) throws CallRemoteServiceException {
 		// 调用登陆接口
         MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
         paramMap.add("name", name);
         paramMap.add("password", password);
         String body = "";
         try {
-	        body = restTemplate.postForEntity("http://" + serverName + "/getUser",paramMap, String.class).getBody();
+	        body = restTemplate.postForEntity("http://" + serverName + "/findUserByNameAndPassword",paramMap, String.class).getBody();
         }catch (IllegalStateException e) {
         	logger.error("远程访问失败：{}", e.getMessage());
             throw new CallRemoteServiceException(ErrorCode.REMOTE_EXCEPTION, "微服务" + serverName + "未启动");
@@ -52,12 +52,12 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 	}
 
 	@Override
-	public boolean doForbidden(Long userID) throws CallRemoteServiceException {
+	public boolean doForbiddenByUserId(Long userID) throws CallRemoteServiceException {
 		// 调用登陆接口
         MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
         paramMap.add("id", userID);
 
-        String body = restTemplate.postForEntity("http://"+serverName+"/doForbidden",paramMap, String.class).getBody();
+        String body = restTemplate.postForEntity("http://"+serverName+"/doForbiddenByUserId",paramMap, String.class).getBody();
 
         logger.info("执行冻结用户结果 == " + body);
         ResponseMessage<?> responseMessage = gson.fromJson(body, ResponseMessage.class);
@@ -69,12 +69,12 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 	}
 	
 	@Override
-	public boolean doUnforbidden(Long userID) throws CallRemoteServiceException {
+	public boolean doUnforbiddenByUserId(Long userID) throws CallRemoteServiceException {
 		// 调用登陆接口
         MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
         paramMap.add("id", userID);
 
-        String body = restTemplate.postForEntity("http://"+serverName+"/doUnforbidden",paramMap, String.class).getBody();
+        String body = restTemplate.postForEntity("http://"+serverName+"/doUnforbiddenByUserId",paramMap, String.class).getBody();
 
         logger.info("执行解冻用户结果 == " + body);
         ResponseMessage<?> responseMessage = gson.fromJson(body, ResponseMessage.class);
