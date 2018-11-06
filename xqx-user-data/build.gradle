@@ -21,5 +21,7 @@ dependencies {
 	// alibaba druid
 	compile 'com.alibaba:druid-spring-boot-starter:1.1.9'
 	testCompile('org.springframework.boot:spring-boot-starter-test')
+
+	compile "org.springframework.cloud:spring-cloud-starter-zipkin:2.0.1.RELEASE"
 }
 
