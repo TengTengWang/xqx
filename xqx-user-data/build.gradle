@@ -17,7 +17,7 @@ dependencies {
 	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
 	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
 	compile "mysql:mysql-connector-java:${mysqlVersion}"
-	compile group: 'redis.clients', name: 'jedis', version: '2.9.0'
+	compile "redis.clients:jedis:2.9.0"
 	// alibaba druid
 	compile 'com.alibaba:druid-spring-boot-starter:1.1.9'
 	testCompile('org.springframework.boot:spring-boot-starter-test')

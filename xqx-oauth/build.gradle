@@ -21,7 +21,6 @@ dependencies {
 	compile 'com.auth0:java-jwt:3.4.0'
 	
 	compile "org.springframework.boot:spring-boot-starter-cache:${springBootVersion}"
-	compile group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: '2.6.2'
-	
+	compile "com.github.ben-manes.caffeine:caffeine:2.6.2"
  	compile "org.springframework.boot:spring-boot-starter-actuator"
 }
