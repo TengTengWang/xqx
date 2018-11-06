@@ -1,12 +1,17 @@
 package com.xqx.oauth.app;
 
+import java.util.List;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
@@ -21,6 +26,7 @@ import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServl
 @SpringCloudApplication
 @EnableDiscoveryClient // Eureka客户端
 @EnableApolloConfig
+@EnableCaching// 开启缓存，需要显示的指定
 @ComponentScan(basePackages = "com.xqx")
 public class XqxOauthApplication {
 
@@ -31,7 +37,15 @@ public class XqxOauthApplication {
 	@Bean
     @LoadBalanced
     RestTemplate restTemplate(){
-        return new RestTemplate();
+		RestTemplate restTemplate = new RestTemplate();
+        //获取RestTemplate默认配置好的所有转换器
+        List<HttpMessageConverter<?>> messageConverters = restTemplate.getMessageConverters();
+        //默认的MappingJackson2HttpMessageConverter在第7个 先把它移除掉
+        messageConverters.remove(6);
+        //添加上GSON的转换器
+        messageConverters.add(6, new GsonHttpMessageConverter());
+
+        return restTemplate;
     }
 
 	@Bean

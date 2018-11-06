@@ -12,14 +12,14 @@ import com.xqx.base.exception.ErrorCode;
 import com.xqx.base.exception.ServiceException;
 import com.xqx.base.vo.ResponseMessage;
 import com.xqx.base.vo.Token;
-import com.xqx.oauth.servic.TokenService;
+import com.xqx.oauth.servic.ITokenService;
 
 @RestController
 public class TokenController {
     private static final Logger logger = LoggerFactory.getLogger(TokenController.class);
     
     @Autowired
-    TokenService tokenService;
+    ITokenService tokenService;
 
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
