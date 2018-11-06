@@ -27,7 +27,7 @@ import com.netflix.hystrix.contrib.metrics.eventstream.HystrixMetricsStreamServl
 @EnableDiscoveryClient // Eureka客户端
 @EnableApolloConfig
 @EnableCaching// 开启缓存，需要显示的指定
-@ComponentScan(basePackages = {"com.xqx.oauth.app","com.xqx.base"})
+@ComponentScan(basePackages = {"com.xqx.oauth","com.xqx.base"})
 public class XqxOauthApplication {
 
 	public static void main(String[] args) {
