@@ -1,5 +1,7 @@
 package com.xqx.base.exception;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -28,9 +30,9 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(value = Throwable.class)
 	@ResponseBody
-	public ResponseMessage<String> defaultErrorHandler(Throwable e) {
-		log.debug(e.getMessage());
-		Transaction t = Cat.newTransaction(e.getClass().getName(), e.getClass().getSimpleName());
+	public ResponseMessage<String> defaultErrorHandler(Throwable e, HttpServletRequest req) {
+		log.debug("全局捕获", e);
+		Transaction t = Cat.newTransaction("Exception", e.getClass().getSimpleName());
 		t.setStatus(e);
 		t.complete();
 		return ResponseMessage.fail(ErrorCode.UNKNOWN_ERROR.getCode(), e.getMessage());
@@ -44,13 +46,14 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(value = RuntimeException.class)
 	@ResponseBody
-	public ResponseMessage<String> runtimeExceptionHandler(RuntimeException e) {
+	public ResponseMessage<String> runtimeExceptionHandler(RuntimeException e, HttpServletRequest req) {
 		log.debug("全局捕获", e);
-		Transaction t = Cat.newTransaction(e.getClass().getName(), e.getClass().getSimpleName());
+		Transaction t = Cat.newTransaction(e.getClass().getSimpleName(), ErrorCode.UNKNOWN_ERROR.getCode()+"");
 		t.setStatus(e);
 		t.complete();
 		return ResponseMessage.fail(ErrorCode.UNKNOWN_ERROR.getCode(), e.getMessage());
 	}
+
 	/**
 	 * 捕获自定义异常
 	 * 
@@ -59,14 +62,14 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(value = BaseException.class)
 	@ResponseBody
-	public ResponseMessage<String> baseExceptionHandler(BaseException e) {
+	public ResponseMessage<String> baseExceptionHandler(BaseException e, HttpServletRequest req) {
 		// TODO debug 开关
-		log.debug(e.getErrMsg());
-		Transaction t = Cat.newTransaction(e.getClass().getName(), e.getClass().getSimpleName());
+		Transaction t = Cat.newTransaction("Exception", e.getClass().getSimpleName());
 		t.setStatus(e);
 		t.complete();
 		return ResponseMessage.fail(e);
 	}
+
 	/**
 	 * 捕获持久层异常
 	 * 
@@ -75,9 +78,8 @@ public class GlobalExceptionHandler {
 	 */
 	@ExceptionHandler(value = DaoException.class)
 	@ResponseBody
-	public ResponseMessage<String> daoExceptionHandler(DaoException e) {
-		log.debug(e.getErrMsg());
-		Transaction t = Cat.newTransaction(e.getClass().getName(), e.getClass().getSimpleName());
+	public ResponseMessage<String> daoExceptionHandler(DaoException e, HttpServletRequest req) {
+		Transaction t = Cat.newTransaction("Exception", e.getClass().getSimpleName());
 		t.setStatus(e);
 		t.complete();
 		return ResponseMessage.fail(ErrorCode.DAO_ERROR.getCode(), ErrorCode.DAO_ERROR.getDescription());
