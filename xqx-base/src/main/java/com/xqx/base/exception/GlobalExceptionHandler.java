@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.dianping.cat.Cat;
-import com.dianping.cat.message.Transaction;
 import com.xqx.base.vo.ResponseMessage;
 
 /**
@@ -31,10 +30,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = Throwable.class)
 	@ResponseBody
 	public ResponseMessage<String> defaultErrorHandler(Throwable e, HttpServletRequest req) {
-		log.debug("全局捕获", e);
-		Transaction t = Cat.newTransaction("Exception", e.getClass().getSimpleName());
-		t.setStatus(e);
-		t.complete();
+		log.debug("捕获异常", e);
+		Cat.logError(e);
 		return ResponseMessage.fail(ErrorCode.UNKNOWN_ERROR.getCode(), e.getMessage());
 	}
 
@@ -47,10 +44,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = RuntimeException.class)
 	@ResponseBody
 	public ResponseMessage<String> runtimeExceptionHandler(RuntimeException e, HttpServletRequest req) {
-		log.debug("全局捕获", e);
-		Transaction t = Cat.newTransaction(e.getClass().getSimpleName(), ErrorCode.UNKNOWN_ERROR.getCode()+"");
-		t.setStatus(e);
-		t.complete();
+		log.debug("捕获异常", e);
+		Cat.logError(e);
 		return ResponseMessage.fail(ErrorCode.UNKNOWN_ERROR.getCode(), e.getMessage());
 	}
 
@@ -63,10 +58,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = BaseException.class)
 	@ResponseBody
 	public ResponseMessage<String> baseExceptionHandler(BaseException e, HttpServletRequest req) {
-		// TODO debug 开关
-		Transaction t = Cat.newTransaction("Exception", e.getClass().getSimpleName());
-		t.setStatus(e);
-		t.complete();
+		Cat.logEvent(e.getClass().getName(), e.getErrorCode().toString());
 		return ResponseMessage.fail(e);
 	}
 
@@ -79,9 +71,7 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = DaoException.class)
 	@ResponseBody
 	public ResponseMessage<String> daoExceptionHandler(DaoException e, HttpServletRequest req) {
-		Transaction t = Cat.newTransaction("Exception", e.getClass().getSimpleName());
-		t.setStatus(e);
-		t.complete();
+		Cat.logEvent(e.getClass().getName(), e.getErrorCode().toString());
 		return ResponseMessage.fail(ErrorCode.DAO_ERROR.getCode(), ErrorCode.DAO_ERROR.getDescription());
 	}
 

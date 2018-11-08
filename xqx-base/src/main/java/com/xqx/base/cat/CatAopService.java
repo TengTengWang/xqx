@@ -2,8 +2,10 @@ package com.xqx.base.cat;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Transaction;
@@ -16,7 +18,17 @@ import com.xqx.base.vo.ResponseMessage;
 public class CatAopService {
 	private Logger logger = LoggerFactory.getLogger(CatAopService.class);
 
-	@Around(value = "@annotation(org.springframework.web.bind.annotation.RequestMapping)")
+	@Around(value = "execution( com.xqx..* *(..))")
+	public Object catFallbackOption(ProceedingJoinPoint pjp) throws Throwable {
+		System.out.println("============class name = "+pjp.getTarget().getClass().getName());
+		for(Object obj:pjp.getArgs()) {
+			System.out.println(obj);
+		}
+		Object result = pjp.proceed();
+		return result;
+	}
+	
+//	@Around(value = "@annotation(org.springframework.web.bind.annotation.RequestMapping)")
 	public Object catTransactionProcesss(ProceedingJoinPoint pjp) {
 		try {
 			Object result = pjp.proceed();
