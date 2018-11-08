@@ -40,8 +40,9 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 
 	// @Cacheable：加入缓存，返回结果UserDTO != null则缓存，隔段时间拉取更新
 	@Override
-	@Cacheable(value = "user", keyGenerator = "wiselyKeyGenerator", sync = true, condition = "#UserDTO != null")
 	@HystrixCommand(fallbackMethod = "findUserByNameAndPasswordFallback")
+//	unless = "#result==null":返回结果为null则不缓存，sync=true 与 unless 不兼容)
+	@Cacheable(value = "user", keyGenerator = "wiselyKeyGenerator", unless = "#result==null")
 	public UserDTO findUserByNameAndPassword(String name, String password) throws CallRemoteServiceException {
 		MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
 		paramMap.add("name", name);
