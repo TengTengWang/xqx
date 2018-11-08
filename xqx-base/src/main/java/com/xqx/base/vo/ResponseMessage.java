@@ -35,7 +35,7 @@ public class ResponseMessage<T> implements Serializable {
 	 * @return 消息
 	 */
 	public static <T> ResponseMessage<T> success(T data) {
-		return new ResponseMessage<>(0, null, data);
+		return new ResponseMessage<T>(0, null, data);
 	}
 
 	/**

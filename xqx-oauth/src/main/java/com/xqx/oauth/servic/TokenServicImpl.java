@@ -27,18 +27,17 @@ public class TokenServicImpl implements ITokenService {
 
 	private static final Gson gson = new GsonBuilder().create();
 
+	/** 访问令牌过期时间 */
 	@Value("${token.expried.time:1800}")
 	private Long exprieTime;
 
+	/** 刷新令牌过期时间 */
 	@Value("${token.expried.max.time:86400}")
 	private Long exprieTimeMax;
 
 	@Autowired
 	private IRemoteUserDao remoteUserDao;
 
-	/**
-	 * 根据用户输入身份信息生成TOKEN
-	 */
 	@Override
 	public Token createTokenByNameAndPassword(String name, String password) throws ServiceException {
 		if (Strings.isNullOrEmpty(name)) {
@@ -48,25 +47,32 @@ public class TokenServicImpl implements ITokenService {
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数Password不能为空");
 		}
 
+		// 通过User微服务检查登陆
+		UserDTO userDTO = null;
 		try {
-			// 通过User微服务检查登陆
-			UserDTO userDTO = remoteUserDao.findUserByNameAndPassword(name, password);
-			if (userDTO == null) {
-				throw new ServiceException(ErrorCode.DAO_NOTFOUND, "未找到当前用户信息");
-			}
-			if (userDTO.getForbidden()) {
-				BLACK_LIST.add(userDTO.getId());
-				throw new ServiceException(ErrorCode.TOKEN_BLACLIST, ErrorCode.TOKEN_BLACLIST.getDescription());
-			}
-			// 生成Token
-			return createTokenByUser(userDTO);
+			userDTO = remoteUserDao.findUserByNameAndPassword(name, password);
 		} catch (CallRemoteServiceException e) {
-			throw new ServiceException(e, e.getErrorCode(), e.getErrMsg());
+			throw new ServiceException(e);
 		}
+		if (userDTO == null) {
+			throw new ServiceException(ErrorCode.DAO_NOTFOUND, "未找到当前用户信息");
+		}
+		if (userDTO.getForbidden()) {
+			BLACK_LIST.add(userDTO.getId());
+			throw new ServiceException(ErrorCode.TOKEN_BLACLIST, ErrorCode.TOKEN_BLACLIST.getDescription());
+		}
+		// 生成Token
+		return createTokenByUser(userDTO);
 	}
 
-	@Override
-	public Token createTokenByUser(UserDTO userDTO) throws ServiceException {
+	/**
+	 * 通过用户信息签发新的Token实体内容
+	 * 
+	 * @param userDTO 用户信息
+	 * @return Token实体
+	 * @throws ServiceException 业务异常，包括：签发Token失败
+	 */
+	private Token createTokenByUser(UserDTO userDTO) throws ServiceException {
 		if (userDTO == null) {
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数userInfo不能为空");
 		}
@@ -77,7 +83,7 @@ public class TokenServicImpl implements ITokenService {
 			String refreshToken = JWTHelper.sign(userInfoStr, exprieTimeMax);
 			return new Token(userDTO.getName(), exprieTime, accessToken, refreshToken);
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("根据UserDTO生产Token失败", e);
 			throw new ServiceException(e, ErrorCode.TOKEN_EXCEPTION, e.getMessage());
 		}
 	}
@@ -123,9 +129,10 @@ public class TokenServicImpl implements ITokenService {
 	public void addBlackList(Long userId) throws ServiceException {
 		try {
 			BLACK_LIST.add(userId);
+			// TODO 是否加入xxl-job完成
 			remoteUserDao.doForbiddenByUserId(userId);
 		} catch (CallRemoteServiceException e) {
-			throw new ServiceException(e, e.getErrorCode(), e.getErrMsg());
+			throw new ServiceException(e);
 		} catch (Exception e) {
 			throw new ServiceException(e, ErrorCode.UNKNOWN_ERROR, "添加黑名单失败");
 		}
@@ -135,19 +142,20 @@ public class TokenServicImpl implements ITokenService {
 	public void removeBlackList(Long userId) throws ServiceException {
 		try {
 			BLACK_LIST.remove(userId);
+			// TODO 是否加入xxl-job完成
 			remoteUserDao.doUnforbiddenByUserId(userId);
 		} catch (CallRemoteServiceException e) {
-			throw new ServiceException(e, e.getErrorCode(), e.getErrMsg());
+			throw new ServiceException(e);
 		} catch (Exception e) {
 			throw new ServiceException(e, ErrorCode.UNKNOWN_ERROR, "删除黑名单失败");
 		}
 	}
 
 	/**
-	 * 检查黑名单
+	 * 检查黑名单是否存在该用户
 	 * 
-	 * @param userId
-	 * @throws ServiceException
+	 * @param userId 用户唯一标识
+	 * @throws ServiceException 业务异常，包含：用户已存在错误
 	 */
 	private void checkBlackList(Long userId) throws ServiceException {
 

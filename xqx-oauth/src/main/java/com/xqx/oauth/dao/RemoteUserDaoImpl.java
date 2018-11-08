@@ -21,18 +21,24 @@ import com.xqx.base.exception.ErrorCode;
 import com.xqx.base.pojo.dto.UserDTO;
 import com.xqx.base.vo.ResponseMessage;
 
+/**
+ * 远程访问dao实现类
+ */
 @Component
 public class RemoteUserDaoImpl implements IRemoteUserDao {
 
 	private static final Logger logger = LoggerFactory.getLogger(RemoteUserDaoImpl.class);
 	private static final Gson gson = new GsonBuilder().create();
 
+	/** http协议 */
 	private static final String PROTOCOL = "http://";
+	/** 微服务名称 */
 	private static final String USER_DATA_SERVER_NAME = "XQX-USER-DATA";
 
 	@Autowired
-	RestTemplate restTemplate;
+	private RestTemplate restTemplate;
 
+	// @Cacheable：加入缓存，返回结果UserDTO != null则缓存，隔段时间拉取更新
 	@Override
 	@Cacheable(value = "user", keyGenerator = "wiselyKeyGenerator", sync = true, condition = "#UserDTO != null")
 	@HystrixCommand(fallbackMethod = "findUserByNameAndPasswordFallback")
@@ -40,22 +46,15 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 		MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
 		paramMap.add("name", name);
 		paramMap.add("password", password);
-		ResponseMessage<UserDTO> body = null;
 		String url = PROTOCOL + USER_DATA_SERVER_NAME + "/findUserByNameAndPassword";
-		try {
-			body = restTemplate.exchange(url, HttpMethod.POST, new HttpEntity<>(paramMap),
-					new ParameterizedTypeReference<ResponseMessage<UserDTO>>() {
-					}).getBody();
-		} catch (IllegalStateException e) {
-			logger.error("远程访问失败：{}", e.getMessage());
-			throw new CallRemoteServiceException(ErrorCode.REMOTE_EXCEPTION, "微服务" + USER_DATA_SERVER_NAME + "未启动");
-		}
+
+//		ResponseMessage<UserDTO> body = getRemoteServiceResult(url, HttpMethod.POST, paramMap, new UserDTO());
+
+		ResponseMessage<?> body = getRemoteServiceResult(url, paramMap, ResponseMessage.class);
 		logger.info("执行登陆结果 == " + body);
-		if (body.getStatus() != 0) {
-			logger.error("远程访问返回结果错误：{}", body.getMessage());
-			throw new CallRemoteServiceException(ErrorCode.getErrorCode(body.getStatus()), body.getMessage());
-		}
-		return body.getData();
+		checkResponse(body);
+
+		return gson.fromJson(body.getData().toString(), UserDTO.class);
 	}
 
 	@Override
@@ -66,14 +65,12 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 		paramMap.add("id", userID);
 
 		String url = PROTOCOL + USER_DATA_SERVER_NAME + "/doForbiddenByUserId";
-		String body = restTemplate.postForEntity(url, paramMap, String.class).getBody();
+		String body = getRemoteServiceResult(url, paramMap, String.class);
 
 		logger.info("执行冻结用户结果 == " + body);
 		ResponseMessage<?> responseMessage = gson.fromJson(body, ResponseMessage.class);
-		if (responseMessage.getStatus() != 0) {
-			throw new CallRemoteServiceException(ErrorCode.getErrorCode(responseMessage.getStatus()),
-					responseMessage.getMessage());
-		}
+		checkResponse(responseMessage);
+
 		return (Boolean) responseMessage.getData();
 
 	}
@@ -86,14 +83,12 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 		paramMap.add("id", userID);
 
 		String url = PROTOCOL + USER_DATA_SERVER_NAME + "/doUnforbiddenByUserId";
-		String body = restTemplate.postForEntity(url, paramMap, String.class).getBody();
+		String body = getRemoteServiceResult(url, paramMap, String.class);
 
 		logger.info("执行解冻用户结果 == " + body);
 		ResponseMessage<?> responseMessage = gson.fromJson(body, ResponseMessage.class);
-		if (responseMessage.getStatus() != 0) {
-			throw new CallRemoteServiceException(ErrorCode.getErrorCode(responseMessage.getStatus()),
-					responseMessage.getMessage());
-		}
+		checkResponse(responseMessage);
+
 		return (Boolean) responseMessage.getData();
 	}
 
@@ -113,4 +108,34 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 		return false;
 	}
 
+	private <T> T getRemoteServiceResult(String url, Object request, Class<T> responseType, Object... uriVariables)
+			throws CallRemoteServiceException {
+		try {
+			return restTemplate.postForEntity(url, request, responseType).getBody();
+		} catch (IllegalStateException e) {
+			logger.error("远程访问失败：{}", e.getMessage());
+			throw new CallRemoteServiceException(ErrorCode.REMOTE_EXCEPTION, "微服务" + USER_DATA_SERVER_NAME + "未启动");
+		}
+	}
+
+	@SuppressWarnings("unused")
+	// 另一种访问方式
+	private ResponseMessage<UserDTO> getRemoteServiceResult(String url, HttpMethod method,
+			MultiValueMap<String, Object> paramMap, Object... uriVariables) throws CallRemoteServiceException {
+		try {
+			return restTemplate.exchange(url, method, new HttpEntity<>(paramMap),
+					new ParameterizedTypeReference<ResponseMessage<UserDTO>>() {
+					}, uriVariables).getBody();
+		} catch (IllegalStateException e) {
+			logger.error("远程访问失败：{}", e.getMessage());
+			throw new CallRemoteServiceException(ErrorCode.REMOTE_EXCEPTION, "微服务" + USER_DATA_SERVER_NAME + "未启动");
+		}
+	}
+
+	private void checkResponse(ResponseMessage<?> responseMessage) throws CallRemoteServiceException {
+		if (responseMessage.getStatus() != 0) {
+			throw new CallRemoteServiceException(ErrorCode.getErrorCode(responseMessage.getStatus()),
+					responseMessage.getMessage());
+		}
+	}
 }

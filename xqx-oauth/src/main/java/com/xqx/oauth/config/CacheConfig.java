@@ -8,6 +8,9 @@ import org.springframework.context.annotation.Configuration;
 
 import com.github.benmanes.caffeine.cache.CacheLoader;
 
+/**
+ * 缓存配置
+ */
 @Configuration
 public class CacheConfig {
 
@@ -35,7 +38,7 @@ public class CacheConfig {
         return cacheLoader;
     }
     
-    /*
+    /**
 	 * 定义缓存数据 key 生成策略的bean 包名+类名+方法名+所有参数
 	 */
 	@Bean
@@ -51,7 +54,6 @@ public class CacheConfig {
 					sb.append("_");
 					sb.append(obj.toString());
 				}
-				//System.out.println("Key生成策略=========="+sb.toString());
 				return sb.toString();
 			}
 		};

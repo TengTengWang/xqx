@@ -1,5 +1,8 @@
 package com.xqx.base.pojo.dto;
 
+/**
+ * 用户信息
+ */
 public class UserDTO {
 
 	private Long id;
@@ -7,7 +10,6 @@ public class UserDTO {
 	private String password;
 	private Boolean forbidden;
 
-	
 	public UserDTO() {
 		super();
 	}
@@ -43,7 +45,6 @@ public class UserDTO {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-	
 
 	public Boolean getForbidden() {
 		return forbidden;
@@ -57,5 +58,5 @@ public class UserDTO {
 	public String toString() {
 		return "UserInfo [id=" + id + ", name=" + name + ", password=" + password + ", forbidden=" + forbidden + "]";
 	}
-	
+
 }

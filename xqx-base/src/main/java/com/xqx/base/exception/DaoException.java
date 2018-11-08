@@ -5,10 +5,6 @@ package com.xqx.base.exception;
  * 持久化访问异常类
  */
 public class DaoException extends RuntimeException{
-
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private ErrorCode errorCode;
     private String errMsg;

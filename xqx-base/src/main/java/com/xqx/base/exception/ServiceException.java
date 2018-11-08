@@ -5,11 +5,11 @@ package com.xqx.base.exception;
  */
 public class ServiceException extends BaseException {
 	private static final long serialVersionUID = 1L;
-	
+
 	public ServiceException(ErrorCode errorCode) {
 		super(errorCode.getDescription());
 		this.errorCode = errorCode;
-		errMsg = errorCode.getDescription();
+		this.errMsg = errorCode.getDescription();
 	}
 
 	public ServiceException(ErrorCode errorCode, String errMsg) {
@@ -22,5 +22,11 @@ public class ServiceException extends BaseException {
 		super(throwable.getMessage(), throwable);
 		this.errorCode = errorCode;
 		this.errMsg = errorCode.getDescription() + "。" + errMsg;
+	}
+
+	public ServiceException(BaseException e) {
+		super(e.getErrMsg(), e);
+		this.errorCode = e.getErrorCode();
+		this.errMsg = e.getErrMsg();
 	}
 }
