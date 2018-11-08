@@ -55,6 +55,9 @@ public class TokenServicImpl implements ITokenService {
         try {
         	// 通过User微服务检查登陆
             UserDTO userDTO = remoteUserDao.findUserByNameAndPassword(name, password);
+            if(userDTO == null) {
+            	throw new ServiceException(ErrorCode.DAO_NOTFOUND, "未找到当前用户信息");
+            }
             if(userDTO.getForbidden()) {
             	BLACK_LIST.add(userDTO.getId());
             	throw new ServiceException(ErrorCode.TOKEN_BLACLIST, ErrorCode.TOKEN_BLACLIST.getDescription());

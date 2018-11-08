@@ -16,13 +16,12 @@ import com.xqx.base.exception.CallRemoteServiceException;
 import com.xqx.base.exception.ErrorCode;
 import com.xqx.base.pojo.dto.UserDTO;
 import com.xqx.base.vo.ResponseMessage;
-import com.xqx.oauth.servic.TokenServicImpl;
 
 
 @Component
 public class RemoteUserDaoImpl implements IRemoteUserDao {
 	
-	private static final Logger logger = LoggerFactory.getLogger(TokenServicImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(RemoteUserDaoImpl.class);
 	private static final Gson gson = new GsonBuilder().create();
 	private static final String serverName = "XQX-USER-DATA";
 	
@@ -31,6 +30,7 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 
 	@Override
 	@Cacheable(value = "user", keyGenerator = "wiselyKeyGenerator", sync = true)
+	@HystrixCommand(fallbackMethod = "findUserByNameAndPasswordFallback")
 	public UserDTO findUserByNameAndPassword(String name, String password) throws CallRemoteServiceException {
 		// 调用登陆接口
         MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
@@ -52,6 +52,7 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 	}
 
 	@Override
+	@HystrixCommand(fallbackMethod = "doForbiddenByUserIdFallback")
 	public boolean doForbiddenByUserId(Long userID) throws CallRemoteServiceException {
 		// 调用登陆接口
         MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
@@ -69,6 +70,7 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 	}
 	
 	@Override
+	@HystrixCommand(fallbackMethod = "doUnforbiddenByUserIdFallback")
 	public boolean doUnforbiddenByUserId(Long userID) throws CallRemoteServiceException {
 		// 调用登陆接口
         MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
@@ -84,5 +86,19 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
         return (Boolean)responseMessage.getData();
 	}
 
+	protected UserDTO findUserByNameAndPasswordFallback(String name, String password, Throwable throwable) {
+		// return ResponseMessage.fail(ErrorCode.HYSTRIX_FALLBACK.getCode(), "执行登陆失败 " + throwable.getLocalizedMessage());
+		return null;
+	}
+
+	protected boolean doForbiddenByUserIdFallback(String accessToken, Throwable throwable) {
+		// return ResponseMessage.fail(ErrorCode.HYSTRIX_FALLBACK.getCode(), "执行校验失败 " + throwable.getLocalizedMessage());
+		return false;
+	}
+
+	protected boolean doUnforbiddenByUserIdFallback(Long userId, Throwable throwable) {
+		// return ResponseMessage.fail(ErrorCode.HYSTRIX_FALLBACK.getCode(), "执行冻结用户失败 " + throwable.getLocalizedMessage());
+		return false;
+	}
 
 }
