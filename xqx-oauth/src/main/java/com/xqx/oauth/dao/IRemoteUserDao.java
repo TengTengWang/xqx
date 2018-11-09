@@ -25,7 +25,7 @@ public interface IRemoteUserDao {
 	 * @return 是否加入成功
 	 * @throws CallRemoteServiceException
 	 */
-	public boolean doForbiddenByUserId(Long userID) throws CallRemoteServiceException;
+	public boolean addBlackList(Long userID) throws CallRemoteServiceException;
 
 	/**
 	 * 远程将用户移除黑名单

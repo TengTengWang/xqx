@@ -130,7 +130,7 @@ public class TokenServicImpl implements ITokenService {
 		try {
 			BLACK_LIST.add(userId);
 			// TODO 是否加入xxl-job完成
-			remoteUserDao.doForbiddenByUserId(userId);
+			remoteUserDao.addBlackList(userId);
 		} catch (CallRemoteServiceException e) {
 			throw new ServiceException(e);
 		} catch (Exception e) {

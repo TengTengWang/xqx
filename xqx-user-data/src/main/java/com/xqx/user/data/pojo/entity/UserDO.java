@@ -5,27 +5,29 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * 数据库实体 对应数据传输实体UserDTO用于脱敏
+ */
 @Entity
-@Table(name="u_user")
+@Table(name = "u_user")
 public class UserDO {
 
 	@Id
-    @GeneratedValue
-    private Long id;
-    private String name;
-    private String password;
-    private Boolean forbidden;
-    
-    public UserDO() {
+	@GeneratedValue
+	private Long id;
+	private String name;
+	private String password;
+	private Boolean forbidden;
+
+	public UserDO() {
 	}
 
-	public UserDO(Long id, String name, String password,Boolean forbidden) {
-        this.id = id;
-        this.name = name;
-        this.password = password;
-        this.forbidden = forbidden;
-    }
-	
+	public UserDO(Long id, String name, String password, Boolean forbidden) {
+		this.id = id;
+		this.name = name;
+		this.password = password;
+		this.forbidden = forbidden;
+	}
 
 	public Long getId() {
 		return id;

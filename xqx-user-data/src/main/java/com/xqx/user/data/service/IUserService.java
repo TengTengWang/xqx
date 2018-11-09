@@ -7,71 +7,79 @@ import com.xqx.base.pojo.dto.UserDTO;
 
 /**
  * 逻辑层接口
+ * 
  * @author teng
  *
  */
 public interface IUserService {
 
 	/**
-	 * 保存
-	 * @param user
-	 * @return
-	 * @throws ServiceException
+	 * 保存用户信息
+	 * 
+	 * @param user 用户实体
+	 * @return 用户传输实体
+	 * @throws ServiceException 业务异常，包含：user对象不能为空错误
 	 */
 	UserDTO saveUser(UserDTO user) throws ServiceException;
 
 	/**
-	 * 删除
-	 * @param id
+	 * 根据ID删除用户信息
+	 * 
+	 * @param id 用户唯一标识
+	 * @throws ServiceException 业务异常，包含：参数ID不能为空错误
+	 */
+	void removeUserById(Long id) throws ServiceException;
+
+	/**
+	 * 根据ID获取用户对象
+	 * 
+	 * @param id 用户唯一标识
+	 * @return 用户传输实体
+	 * @throws ServiceException 业务异常，包含：参数ID不能为空错误
+	 */
+	UserDTO getUserByID(Long id) throws ServiceException;
+
+	/**
+	 * 根据用户名密码查询用户
+	 * 
+	 * @param name     用户名
+	 * @param password 密码
+	 * @return 用户传输实体
+	 * @throws ServiceException 业务异常，包含：参数不能为空错误，未找到用户错误
+	 */
+	UserDTO getUserByNameAndPassword(String name, String password) throws ServiceException;
+
+	/**
+	 * 获取所有用户
+	 * 
+	 * @return 用户传输实体列表
+	 */
+	List<UserDTO> listAllUser();
+
+	/**
+	 * 统计用户数量 示例
+	 * 
+	 * @param name
+	 * @return
 	 * @throws ServiceException
 	 */
-    void removeUserById(Long id) throws ServiceException;
+	Long countUserByName(String name) throws ServiceException;
 
-    /**
-     * 获取单独对象
-     * @param id
-     * @return
-     * @throws ServiceException
-     */
-    UserDTO getUserByID(Long id) throws ServiceException;
+	/**
+	 * 冻结用户
+	 * 
+	 * @param id 用户唯一标识
+	 * @return 用户传输实体
+	 * @throws ServiceException 业务异常，包含：未找到该id错误，设置黑名单失败错误
+	 */
+	UserDTO doForbiddenById(Long id) throws ServiceException;
 
-    /**
-     * 查询用户
-     * @param name
-     * @param password
-     * @return
-     * @throws ServiceException
-     */
-    UserDTO getUserByNameAndPassword(String name,String password) throws ServiceException;
-
-    /**
-     * 获取所有用户
-     * @return
-     * @throws ServiceException
-     */
-    List<UserDTO> listAllUser() throws ServiceException;
-
-    /**
-     * 统计用户数量
-     * @param name
-     * @return
-     * @throws ServiceException
-     */
-    Long countUserByName(String name) throws ServiceException;
-    
-    /**
-     * 冻结用户
-     * @param id
-     * @return
-     * @throws ServiceException
-     */
-    UserDTO doForbiddenById(Long id)throws ServiceException; 
-    
-    /**
-     * 解冻用户
-     * @param id
-     * @return
-     * @throws ServiceException
-     */
-    UserDTO doUnforbiddenById(Long id)throws ServiceException; 
+	/**
+	 * 解冻用户
+	 * 
+	 * @param id 用户唯一标识
+	 * @return 用户传输实体
+	 * @throws ServiceException 业务异常，包含：未找到该id错误，设置黑名单失败错误
+	 */
+	UserDTO doUnforbiddenById(Long id) throws ServiceException;
 }

@@ -4,8 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,7 +47,7 @@ public class TokenController {
 	 * @return 校验是否通过的实体
 	 * @throws ServiceException 业务异常，包括：参数为空错误，token过期错误，签发token异常错误，该用户在黑名单错误
 	 */
-	@RequestMapping(value = "/verifyToken", method = RequestMethod.POST)
+	@PostMapping(value = "/verifyToken")
 	public ResponseMessage<Boolean> verifyToken(@RequestParam("accessToken") String accessToken)
 			throws ServiceException {
 		logger.info("检验Token，token：{}", accessToken);
@@ -66,7 +64,7 @@ public class TokenController {
 	 * @return 新的访问令牌的实体
 	 * @throws ServiceException 业务异常，包括：参数为空错误，签发Token失败错误
 	 */
-	@RequestMapping(value = "/refreshToken", method = RequestMethod.POST)
+	@PostMapping(value = "/refreshToken")
 	public ResponseMessage<Token> refreshToken(@RequestParam("refreshToken") String refreshToken)
 			throws ServiceException {
 		logger.info("更新Token，refreshToken：{}", refreshToken);
@@ -83,7 +81,7 @@ public class TokenController {
 	 * @return 加入黑名单是否成功的实体
 	 * @throws ServiceException 业务异常，包括：访问远程服务失败错误，未知异常错误
 	 */
-	@RequestMapping(value = "/addBlackList")
+	@PostMapping(value = "/addBlackList")
 	public ResponseMessage<Boolean> addBlackList(@RequestParam("userId") Long userId) throws ServiceException {
 		logger.info("添加黑名单：{}", userId);
 
@@ -99,7 +97,7 @@ public class TokenController {
 	 * @return 删除黑名单是否成功的实体
 	 * @throws ServiceException业务异常，包括：访问远程服务失败错误，未知异常错误
 	 */
-	@RequestMapping(value = "/removeBlackList")
+	@PostMapping(value = "/removeBlackList")
 	public ResponseMessage<Boolean> removeBlackList(@RequestParam("userId") Long userId) throws ServiceException {
 		logger.info("删除黑名单：{}", userId);
 

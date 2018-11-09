@@ -56,8 +56,8 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 	}
 
 	@Override
-	@HystrixCommand(fallbackMethod = "doForbiddenByUserIdFallback")
-	public boolean doForbiddenByUserId(Long userID) throws CallRemoteServiceException {
+	@HystrixCommand(fallbackMethod = "addBlackListFallback")
+	public boolean addBlackList(Long userID) throws CallRemoteServiceException {
 		// 调用登陆接口
 		MultiValueMap<String, Object> paramMap = new LinkedMultiValueMap<String, Object>();
 		paramMap.add("id", userID);
@@ -96,7 +96,7 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 		return null;
 	}
 
-	protected boolean doForbiddenByUserIdFallback(String accessToken, Throwable throwable) {
+	protected boolean addBlackListFallback(String accessToken, Throwable throwable) {
 		Cat.logError(throwable);
 		return false;
 	}
@@ -106,6 +106,16 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 		return false;
 	}
 
+	/**
+	 * 远程访问数据
+	 * 
+	 * @param url 地址
+	 * @param request 请求参数
+	 * @param responseType 类型
+	 * @param uriVariables
+	 * @return 类型对应的实体
+	 * @throws CallRemoteServiceException 远程调用异常，微服务未启动
+	 */
 	private <T> T getRemoteServiceResult(String url, Object request, Class<T> responseType, Object... uriVariables)
 			throws CallRemoteServiceException {
 		try {
@@ -130,6 +140,12 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 		}
 	}
 
+	/**
+	 * 检查返回结果
+	 * 
+	 * @param responseMessage 待检测的实体
+	 * @throws CallRemoteServiceException 远程调用异常，返回码不为0错误
+	 */
 	private void checkResponse(ResponseMessage<?> responseMessage) throws CallRemoteServiceException {
 		if (responseMessage.getStatus() != 0) {
 			throw new CallRemoteServiceException(ErrorCode.getErrorCode(responseMessage.getStatus()),
