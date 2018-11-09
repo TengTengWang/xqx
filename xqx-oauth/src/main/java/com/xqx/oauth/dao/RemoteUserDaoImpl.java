@@ -38,7 +38,6 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	// @Cacheable：加入缓存，返回结果UserDTO != null则缓存，隔段时间拉取更新
 	@Override
 	@HystrixCommand(fallbackMethod = "findUserByNameAndPasswordFallback")
 //	unless = "#result==null":返回结果为null则不缓存，sync=true 与 unless 不兼容)
@@ -48,8 +47,6 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 		paramMap.add("name", name);
 		paramMap.add("password", password);
 		String url = PROTOCOL + USER_DATA_SERVER_NAME + "/findUserByNameAndPassword";
-
-//		ResponseMessage<UserDTO> body = getRemoteServiceResult(url, HttpMethod.POST, paramMap, new UserDTO());
 
 		ResponseMessage<?> body = getRemoteServiceResult(url, paramMap, ResponseMessage.class);
 		logger.info("执行登陆结果 == " + body);
