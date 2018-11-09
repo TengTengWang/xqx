@@ -15,8 +15,8 @@ import com.google.gson.Gson;
 import com.xqx.base.util.HttpClientUtils;
 import com.xqx.monitor.conf.MonitorConf;
 import com.xqx.monitor.pojo.DruidSqlBean;
-import com.xqx.monitor.pojo.DruidUriBean;
 import com.xqx.monitor.pojo.DruidSqlBean.SqlContent;
+import com.xqx.monitor.pojo.DruidUriBean;
 import com.xqx.monitor.pojo.DruidUriBean.UriContent;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.IJobHandler;
@@ -59,8 +59,8 @@ public class CollectDruidHandler extends IJobHandler {
 					uriData = getUriData(druidAddress);
 					parseForUriData(uriData);
 
-					// TODO 清空druid监控缓存
-//				resetDruid(druidAddress);
+					// 清空druid监控缓存
+					resetDruid(druidAddress);
 
 					// 拉取druid api成功则记录
 					Cat.logEvent("monitorPull", "pullDruidUriSuccess", Event.SUCCESS, druidAddress);

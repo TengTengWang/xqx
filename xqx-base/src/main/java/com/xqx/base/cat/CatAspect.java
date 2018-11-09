@@ -2,10 +2,8 @@ package com.xqx.base.cat;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 
 import com.dianping.cat.Cat;
 import com.dianping.cat.message.Transaction;
@@ -15,8 +13,8 @@ import com.xqx.base.vo.ResponseMessage;
 
 //@Aspect
 //@Component
-public class CatAopService {
-	private Logger logger = LoggerFactory.getLogger(CatAopService.class);
+public class CatAspect {
+	private Logger logger = LoggerFactory.getLogger(CatAspect.class);
 
 	@Around(value = "execution( com.xqx..* *(..))")
 	public Object catFallbackOption(ProceedingJoinPoint pjp) throws Throwable {
