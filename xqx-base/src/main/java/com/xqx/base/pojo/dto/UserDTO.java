@@ -1,7 +1,7 @@
 package com.xqx.base.pojo.dto;
 
 /**
- * 用户信息
+ * 用户传输信息实体
  */
 public class UserDTO {
 

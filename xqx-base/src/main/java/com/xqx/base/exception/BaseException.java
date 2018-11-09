@@ -1,5 +1,8 @@
 package com.xqx.base.exception;
 
+/**
+ * 基础异常类，自定义异常均继承此
+ */
 public class BaseException extends Exception {
 
 	private static final long serialVersionUID = 1L;

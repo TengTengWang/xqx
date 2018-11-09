@@ -6,6 +6,9 @@ import org.springframework.context.annotation.Configuration;
 
 import com.dianping.cat.servlet.CatFilter;
 
+/**
+ * 点评CAT启用配置
+ */
 @Configuration
 public class CatFilterConfigure {
 
