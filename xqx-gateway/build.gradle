@@ -9,6 +9,7 @@ dependencyManagement {
 
 dependencies {
 	compile project(':xqx-base')
+	
 	// spring cloud zuul
 	compile "org.springframework.cloud:spring-cloud-starter-zuul:${springModulVersion}"
 	// spring cloud eureka

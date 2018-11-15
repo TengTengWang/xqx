@@ -7,6 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 
 import com.ctrip.framework.apollo.spring.annotation.EnableApolloConfig;
 
+
 @SpringCloudApplication
 @EnableDiscoveryClient // Eureka客户端
 @EnableApolloConfig({"application","monitorConf"})
