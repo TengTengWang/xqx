@@ -1,9 +1,9 @@
 subprojects{
 	ext {
-		springBootVersion = '2.0.4.RELEASE'
-		springModulVersion = '1.4.5.RELEASE'
-		springframeworkVersion = '5.0.5.RELEASE'
-		apolloClientVersion = '1.0.0'
+		springBootVersion = '2.1.0.RELEASE'
+		springModulVersion = '1.4.6.RELEASE'
+		springCloudVersion = 'Greenwich.M1'
+		springframeworkVersion = '5.1.2.RELEASE'
 		mysqlVersion = '8.0.12'
 	}
 	buildscript {
@@ -31,6 +31,7 @@ subprojects{
 	
 	[compileJava, compileTestJava, javadoc]*.options*.encoding = 'UTF-8'
 	
+	
 	repositories {
 		mavenLocal()
 		mavenCentral()
@@ -41,19 +42,16 @@ subprojects{
         maven { url 'http://repo.spring.io/milestone' }
 	}
 	
-	
 	dependencies {
 		// json
 		compile 'com.google.code.gson:gson:2.8.5'
-		
+		compile 'com.ctrip.framework.apollo:apollo-client:1.1.2'
 		testCompile 'junit:junit:4.12'
 		
-		compile group: 'com.ctrip.framework.apollo', name: 'apollo-client', version: '1.1.2'
-		
+		// load local jar
 		//ext.jarTree = fileTree(dir: 'libs', include: '**/*.jar')
         //ext.rootProjectLibs = new File(rootProject.rootDir, 'libs').getAbsolutePath()
         //ext.jarTree += fileTree(dir: rootProjectLibs, include: '**/*.jar')
-       
         //compile jarTree
 	}
 	configurations {

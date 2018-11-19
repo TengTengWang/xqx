@@ -32,26 +32,19 @@ target
 hs_err_pid*
 
 # eclipse
-/.classpath
-/.project
-/.settings/	
-/target/
+.classpath
+.project
+.settings/
+target/
 bin/
 gradle/
 .gradle/
 build/
-build/
+logs/
 
 # local
-/certificates/
-/target/
-/logs/
-.project
-.classpath
-.settings/
-.factorypath
+
 gradlew
 gradlew.bat
 
 .DS_Store
-.gitignore

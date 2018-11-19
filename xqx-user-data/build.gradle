@@ -9,19 +9,31 @@ dependencyManagement {
 
 dependencies {
 	compile project(':xqx-base')
-	compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
+	// spring boot web
 	compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
-	compile "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
-	compile "org.springframework.boot:spring-boot-starter-cache:${springBootVersion}"
-	compile ("org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}"){exclude module: "lettuce-core"}
+	// eureka
 	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
-	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
-	compile "mysql:mysql-connector-java:${mysqlVersion}"
+	// jpa
+	compile "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
+	// reids
+	compile ("org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}"){exclude module: "lettuce-core"}
+	// jedis
 	compile "redis.clients:jedis:2.9.0"
-	// alibaba druid
+	// cache
+	compile "org.springframework.boot:spring-boot-starter-cache:${springBootVersion}"
+	// mysql
+	compile "mysql:mysql-connector-java:${mysqlVersion}"
+	
+	// actuator
+	compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
+	// hystrix
+	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
+	// druid
 	compile 'com.alibaba:druid-spring-boot-starter:1.1.9'
-	testCompile('org.springframework.boot:spring-boot-starter-test')
-
+	// zipkin
 	compile "org.springframework.cloud:spring-cloud-starter-zipkin:2.0.1.RELEASE"
+	
+	// test
+	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
 

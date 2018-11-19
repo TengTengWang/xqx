@@ -12,7 +12,6 @@ dependencies {
 	compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
 	compile "org.springframework.cloud:spring-cloud-starter-netflix-turbine:${springModulVersion}"
 	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
-	compile "com.ctrip.framework.apollo:apollo-client:${apolloClientVersion}"
 	
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }
