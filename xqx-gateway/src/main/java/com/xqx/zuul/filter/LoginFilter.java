@@ -1,15 +1,16 @@
 package com.xqx.zuul.filter;
 
-import com.xqx.base.exception.ErrorCode;
-import com.xqx.base.vo.ResponseMessage;
-import com.netflix.zuul.context.RequestContext;
-import com.netflix.zuul.exception.ZuulException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import com.netflix.zuul.context.RequestContext;
+import com.netflix.zuul.exception.ZuulException;
+import com.xqx.base.exception.ErrorCode;
+import com.xqx.base.vo.ResponseMessage;
 
 /**
  * 定义请求过滤规则。
@@ -19,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 public class LoginFilter extends BaseFilter{
 
     private static Logger logger = LoggerFactory.getLogger(LoginFilter.class);
-    
 
     @Override
     public String filterType() {
@@ -48,7 +48,7 @@ public class LoginFilter extends BaseFilter{
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
         if("GET".equals(request.getMethod())) {
-        	getErrorRequsetContext(requestContext,401,
+        	getRequsetContext(requestContext,401,
                     ResponseMessage.fail(ErrorCode.HTTP_ERROR.getCode(),"请使用POST方式登陆"));
         }
         HttpServletResponse response = requestContext.getResponse();
@@ -59,13 +59,13 @@ public class LoginFilter extends BaseFilter{
         Object password = request.getParameter("password");
 
         // 设置编码格式
-        response.setContentType("text/html;charset=UTF-8");
+        response.setContentType("text/json;charset=UTF-8");
         if(name == null){
-            getErrorRequsetContext(requestContext,401,
+        	getRequsetContext(requestContext,401,
                     ResponseMessage.fail(ErrorCode.ILLEGAL_ARGUMENT.getCode(),"参数Name不能为空"));
-        }
-        if(password == null){
-            getErrorRequsetContext(requestContext,401,
+        	
+        }else if(password == null){
+        	getRequsetContext(requestContext,401,
                     ResponseMessage.fail(ErrorCode.ILLEGAL_ARGUMENT.getCode(),"参数Password不能为空"));
         }
         return null;

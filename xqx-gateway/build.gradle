@@ -9,13 +9,19 @@ dependencyManagement {
 
 dependencies {
 	compile project(':xqx-base')
-	
 	// spring cloud zuul
-	compile 'org.springframework.cloud:spring-cloud-starter-netflix-zuul'
+	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-zuul', version: '2.0.2.RELEASE'
+
 	// spring cloud eureka
 	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
 	// spring cloud hystrix
-	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix"
+	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.0.2.RELEASE'
+
 	// spring cloud zipkin
-	compile 'org.springframework.cloud:spring-cloud-starter-zipkin'
+	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-zipkin', version: '2.0.2.RELEASE'
+	
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.0.RELEASE'
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.1.0.RELEASE'
+	compile "com.github.ben-manes.caffeine:caffeine:2.6.2"
+	compile 'com.auth0:java-jwt:3.4.0'
 }

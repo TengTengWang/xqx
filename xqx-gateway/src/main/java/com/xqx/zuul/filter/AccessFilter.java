@@ -1,17 +1,20 @@
 package com.xqx.zuul.filter;
 
-import com.google.common.base.Strings;
-import com.xqx.base.exception.ErrorCode;
-import com.xqx.base.vo.ResponseMessage;
-import com.xqx.zuul.service.TokenService;
-import com.netflix.zuul.context.RequestContext;
-import com.netflix.zuul.exception.ZuulException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
+import com.google.common.base.Strings;
+import com.netflix.zuul.context.RequestContext;
+import com.netflix.zuul.exception.ZuulException;
+import com.xqx.base.exception.ErrorCode;
+import com.xqx.base.exception.ServiceException;
+import com.xqx.base.vo.ResponseMessage;
+import com.xqx.zuul.service.ITokenService;
 
 /**
  * 定义请求过滤规则。
@@ -24,7 +27,7 @@ public class AccessFilter extends BaseFilter {
     private static Logger logger = LoggerFactory.getLogger(AccessFilter.class);
 
     @Autowired
-    TokenService tokenService;
+	private ITokenService tokenService;
 
     /**
      * 过滤器类型，它决定过滤器在请求的哪个生命周期中执行。
@@ -73,21 +76,24 @@ public class AccessFilter extends BaseFilter {
         RequestContext requestContext = RequestContext.getCurrentContext();
         HttpServletRequest request = requestContext.getRequest();
         logger.info("Send {} reqeust to {}", request.getMethod(), request.getRequestURL().toString());
-
+        // 设置编码格式
+        HttpServletResponse response = requestContext.getResponse();
+        response.setContentType("text/json;charset=UTF-8");
         // 获取指定参数
         String accessToken = request.getHeader("Authorization");
 
         if(Strings.isNullOrEmpty(accessToken)){
-            getErrorRequsetContext(requestContext, 401,
+            getRequsetContext(requestContext, 401,
                     ResponseMessage.fail(ErrorCode.ILLEGAL_ARGUMENT.getCode(), "Authorization不能为空"));
         } else {
-            // 校验token
-            ResponseMessage<Boolean> responseMessage = tokenService.verifyToken(accessToken);
-            if (responseMessage.getStatus() != 0){
-                getErrorRequsetContext(requestContext, 401,responseMessage);
-            } else {
-                logger.info("Authorization校验成功");
-            }
+        	try {
+        		// 校验token
+        		tokenService.verifyToken(accessToken);
+        		logger.info("Authorization校验成功");
+        	}catch(ServiceException e) {
+        		getRequsetContext(requestContext, 401,
+                        ResponseMessage.fail(e.getErrorCode().getCode(), e.getErrMsg()));
+        	}
         }
         return null;
     }

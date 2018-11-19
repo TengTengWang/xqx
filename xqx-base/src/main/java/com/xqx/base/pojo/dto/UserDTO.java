@@ -56,7 +56,7 @@ public class UserDTO {
 
 	@Override
 	public String toString() {
-		return "UserInfo [id=" + id + ", name=" + name + ", password=" + password + ", forbidden=" + forbidden + "]";
+		return "UserDTO [id=" + id + ", name=" + name + ", password=" + password + ", forbidden=" + forbidden + "]";
 	}
 
 }

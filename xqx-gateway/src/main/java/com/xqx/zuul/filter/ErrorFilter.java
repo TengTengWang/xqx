@@ -45,6 +45,6 @@ public class ErrorFilter extends ZuulFilter{
         requestContext.getResponse().setContentType("text/html;charset=UTF-8");
 
 
-        return null;
+        return requestContext;
     }
 }
