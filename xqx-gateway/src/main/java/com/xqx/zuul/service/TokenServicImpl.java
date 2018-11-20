@@ -78,6 +78,7 @@ public class TokenServicImpl implements ITokenService {
 		}
 		try {
 			String userInfoStr = gson.toJson(userDTO);
+			logger.info("userInfoStr:{}", userInfoStr);
 			logger.info("Token过期时长：{}，最大过期时长：{}", exprieTime, exprieTimeMax);
 			String accessToken = JWTHelper.sign(userInfoStr, exprieTime);
 			String refreshToken = JWTHelper.sign(userInfoStr, exprieTimeMax);
@@ -96,7 +97,7 @@ public class TokenServicImpl implements ITokenService {
 		try {
 			UserDTO userDTO = verifyToken(oldRefreshToken);
 			// 签发TOKEN
-			String accessToken = JWTHelper.sign(userDTO.toString(), exprieTime);
+			String accessToken = JWTHelper.sign(gson.toJson(userDTO), exprieTime);
 			return new Token(userDTO.getName(), exprieTime, accessToken, oldRefreshToken);
 		} catch (JsonSyntaxException e) {
 			throw new ServiceException(e, ErrorCode.TOKEN_EXCEPTION, e.getMessage());
@@ -111,9 +112,9 @@ public class TokenServicImpl implements ITokenService {
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数accessToken不能为空");
 		}
 		try {
-			System.out.println("accessToken ===  "+accessToken);
+			System.out.println("accessToken ===  " + accessToken);
 			String context = JWTHelper.unsign(accessToken);
-			System.out.println("Context ===  "+context);
+			System.out.println("Context ===  " + context);
 			UserDTO userDTO = gson.fromJson(context, UserDTO.class);
 			// 检查黑名单
 			checkBlackList(userDTO.getId());
