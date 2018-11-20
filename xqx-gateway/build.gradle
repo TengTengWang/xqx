@@ -9,19 +9,16 @@ dependencyManagement {
 
 dependencies {
 	compile project(':xqx-base')
-	// spring cloud zuul
-	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-zuul', version: '2.0.2.RELEASE'
-
-	// spring cloud eureka
-	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
-	// spring cloud hystrix
-	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-netflix-hystrix', version: '2.0.2.RELEASE'
-
-	// spring cloud zipkin
-	compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-zipkin', version: '2.0.2.RELEASE'
 	
-	compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.0.RELEASE'
-	compile group: 'org.springframework.boot', name: 'spring-boot-starter-cache', version: '2.1.0.RELEASE'
-	compile "com.github.ben-manes.caffeine:caffeine:2.6.2"
-	compile 'com.auth0:java-jwt:3.4.0'
+	implementation('org.springframework.boot:spring-boot-starter-aop')
+	implementation('org.springframework.boot:spring-boot-starter-cache')
+	implementation('org.springframework.boot:spring-boot-starter-web')
+	implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+	// implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-server')
+	implementation('org.springframework.cloud:spring-cloud-starter-netflix-hystrix')
+	implementation('org.springframework.cloud:spring-cloud-starter-netflix-hystrix-dashboard')
+	implementation('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
+	implementation('org.springframework.cloud:spring-cloud-starter-zipkin')
+	implementation("com.github.ben-manes.caffeine:caffeine:2.6.2")
+	implementation('com.auth0:java-jwt:3.4.0')
 }
