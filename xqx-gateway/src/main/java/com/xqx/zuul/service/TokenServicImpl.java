@@ -116,53 +116,14 @@ public class TokenServicImpl implements ITokenService {
 			String context = JWTHelper.unsign(accessToken);
 			System.out.println("Context ===  " + context);
 			UserDTO userDTO = gson.fromJson(context, UserDTO.class);
-			// 检查黑名单
-			checkBlackList(userDTO.getId());
+			// TODO 可能需要检查黑名单
+			// checkBlackList(userDTO.getId());
 			return userDTO;
 		} catch (TokenExpiredException e) {
 			// 过期
 			throw new ServiceException(e, ErrorCode.TOKEN_EXPIRED, e.getMessage());
 		} catch (TokenException e) {
 			throw new ServiceException(e, ErrorCode.TOKEN_EXCEPTION, e.getMessage());
-		}
-	}
-
-	@Override
-	public void addBlackList(Long userId) throws ServiceException {
-		try {
-			BLACK_LIST.add(userId);
-			// TODO 是否加入xxl-job完成
-			remoteUserDao.addBlackList(userId);
-		} catch (CallRemoteServiceException e) {
-			throw new ServiceException(e);
-		} catch (Exception e) {
-			throw new ServiceException(e, ErrorCode.UNKNOWN_ERROR, "添加黑名单失败");
-		}
-	}
-
-	@Override
-	public void removeBlackList(Long userId) throws ServiceException {
-		try {
-			BLACK_LIST.remove(userId);
-			// TODO 是否加入xxl-job完成
-			remoteUserDao.doUnforbiddenByUserId(userId);
-		} catch (CallRemoteServiceException e) {
-			throw new ServiceException(e);
-		} catch (Exception e) {
-			throw new ServiceException(e, ErrorCode.UNKNOWN_ERROR, "删除黑名单失败");
-		}
-	}
-
-	/**
-	 * 检查黑名单是否存在该用户
-	 * 
-	 * @param userId 用户唯一标识
-	 * @throws ServiceException 业务异常，包含：用户已存在错误
-	 */
-	private void checkBlackList(Long userId) throws ServiceException {
-
-		if (BLACK_LIST.contains(userId)) {
-			throw new ServiceException(ErrorCode.TOKEN_BLACLIST, ErrorCode.TOKEN_BLACLIST.getDescription());
 		}
 	}
 

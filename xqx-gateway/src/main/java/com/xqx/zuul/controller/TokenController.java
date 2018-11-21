@@ -73,37 +73,4 @@ public class TokenController {
 
 		return ResponseMessage.success(token);
 	}
-
-	/**
-	 * 加入黑名单
-	 * 
-	 * @param userId 用户唯一标识
-	 * @return 加入黑名单是否成功的实体
-	 * @throws ServiceException 业务异常，包括：访问远程服务失败错误，未知异常错误
-	 */
-	@PostMapping(value = "/addBlackList")
-	public ResponseMessage<Boolean> addBlackList(@RequestParam("userId") Long userId) throws ServiceException {
-		logger.info("添加黑名单：{}", userId);
-
-		tokenService.addBlackList(userId);
-
-		return ResponseMessage.success(true);
-	}
-
-	/**
-	 * 从黑名单删除用户唯一标识
-	 * 
-	 * @param userId 用户唯一标识
-	 * @return 删除黑名单是否成功的实体
-	 * @throws ServiceException业务异常，包括：访问远程服务失败错误，未知异常错误
-	 */
-	@PostMapping(value = "/removeBlackList")
-	public ResponseMessage<Boolean> removeBlackList(@RequestParam("userId") Long userId) throws ServiceException {
-		logger.info("删除黑名单：{}", userId);
-
-		tokenService.removeBlackList(userId);
-
-		return ResponseMessage.success(true);
-	}
-
 }

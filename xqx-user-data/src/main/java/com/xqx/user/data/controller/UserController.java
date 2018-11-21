@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.xqx.base.exception.ErrorCode;
 import com.xqx.base.exception.ServiceException;
 import com.xqx.base.pojo.dto.UserDTO;
 import com.xqx.base.vo.ResponseMessage;
@@ -40,46 +39,6 @@ public class UserController {
 
 			logger.info(user.toString());
 			return ResponseMessage.success(user);
-		} catch (ServiceException e) {
-			return ResponseMessage.fail(e.getErrorCode().getCode(), e.getErrMsg());
-		}
-	}
-
-	/**
-	 * 根据用户ID加入黑名单
-	 * 
-	 * @param id 用户唯一标识
-	 * @return 包含是否加入黑名单成功信息的实体
-	 */
-	@PostMapping(value = "/doForbiddenByUserId")
-	public ResponseMessage<Boolean> doForbiddenByUserId(@RequestParam("id") Long id) {
-		try {
-			UserDTO user = userService.doForbiddenById(id);
-			if (user != null) {
-				return ResponseMessage.success(true);
-			} else {
-				return ResponseMessage.fail(ErrorCode.SERVICE_ERROR.getCode(), "用户ID" + id + "设置黑名单失败");
-			}
-		} catch (ServiceException e) {
-			return ResponseMessage.fail(e.getErrorCode().getCode(), e.getErrMsg());
-		}
-	}
-
-	/**
-	 * 根据用户ID移除黑名单
-	 * 
-	 * @param id 用户唯一标识
-	 * @return 包含是否移除黑名单成功信息的实体
-	 */
-	@PostMapping(value = "/doUnforbiddenByUserId")
-	public ResponseMessage<Boolean> doUnforbiddenByUserId(@RequestParam("id") Long id) {
-		try {
-			UserDTO user = userService.doUnforbiddenById(id);
-			if (user != null) {
-				return ResponseMessage.success(true);
-			} else {
-				return ResponseMessage.fail(ErrorCode.SERVICE_ERROR.getCode(), "用户ID" + id + "设置黑名单失败");
-			}
 		} catch (ServiceException e) {
 			return ResponseMessage.fail(e.getErrorCode().getCode(), e.getErrMsg());
 		}

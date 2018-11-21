@@ -7,7 +7,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -110,8 +109,8 @@ public class RemoteUserDaoImpl implements IRemoteUserDao {
 	/**
 	 * 远程访问数据
 	 * 
-	 * @param url 地址
-	 * @param request 请求参数
+	 * @param url          地址
+	 * @param request      请求参数
 	 * @param responseType 类型
 	 * @param uriVariables
 	 * @return 类型对应的实体
