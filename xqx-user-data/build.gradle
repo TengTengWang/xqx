@@ -8,32 +8,32 @@ dependencyManagement {
 }
 
 dependencies {
-	compile project(':xqx-base')
+	implementation(project(':xqx-base'))
 	// spring boot web
-	compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+	implementation("org.springframework.boot:spring-boot-starter-web")
 	// eureka
-	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
+	implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
 	// jpa
-	compile "org.springframework.boot:spring-boot-starter-data-jpa:${springBootVersion}"
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	// reids
-	compile ("org.springframework.boot:spring-boot-starter-data-redis:${springBootVersion}"){exclude module: "lettuce-core"}
+	implementation("org.springframework.boot:spring-boot-starter-data-redis"){exclude module: "lettuce-core"}
 	// jedis
-	compile "redis.clients:jedis:2.9.0"
+	implementation("redis.clients:jedis:2.9.0")
 	// cache
-	compile "org.springframework.boot:spring-boot-starter-cache:${springBootVersion}"
+	implementation("org.springframework.boot:spring-boot-starter-cache")
 	// mysql
-	compile "mysql:mysql-connector-java:${mysqlVersion}"
+	implementation("mysql:mysql-connector-java:${mysqlVersion}")
 	
 	// actuator
-	compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	// hystrix
-	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-hystrix")
 	// druid
-	compile 'com.alibaba:druid-spring-boot-starter:1.1.9'
+	implementation('com.alibaba:druid-spring-boot-starter:1.1.9')
 	// zipkin
-	compile "org.springframework.cloud:spring-cloud-starter-zipkin:2.0.1.RELEASE"
+	implementation("org.springframework.cloud:spring-cloud-starter-zipkin")
 	
 	// test
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 

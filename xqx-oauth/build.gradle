@@ -10,22 +10,22 @@ dependencyManagement {
 
 dependencies {
 
-	compile project(':xqx-base')
+	implementation(project(':xqx-base'))
 	// spring boot web
-	compile "org.springframework.boot:spring-boot-starter-web:${springBootVersion}"
+	implementation("org.springframework.boot:spring-boot-starter-web")
 	// jwt
-	compile 'com.auth0:java-jwt:3.4.0'
+	implementation('com.auth0:java-jwt:3.4.0')
 	// eureka
-	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
+	implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
 	// cache
-	compile "org.springframework.boot:spring-boot-starter-cache:${springBootVersion}"
+	implementation("org.springframework.boot:spring-boot-starter-cache:")
 	// caffeine	
-	compile "com.github.ben-manes.caffeine:caffeine:2.6.2"
+	implementation("com.github.ben-manes.caffeine:caffeine:2.6.2")
 	
 	// hystrix
-	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix:${springModulVersion}"
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-hystrix")
 	// zipkin
-	compile "org.springframework.cloud:spring-cloud-starter-zipkin:2.0.1.RELEASE"
+	implementation("org.springframework.cloud:spring-cloud-starter-zipkin")
 	// actuator
- 	compile "org.springframework.boot:spring-boot-starter-actuator"
+ 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 }

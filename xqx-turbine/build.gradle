@@ -9,9 +9,8 @@ dependencyManagement {
 }
 
 dependencies {
-	compile "org.springframework.boot:spring-boot-starter-actuator:${springBootVersion}"
-	compile "org.springframework.cloud:spring-cloud-starter-netflix-turbine:${springModulVersion}"
-	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
-	
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-turbine")
+	implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }

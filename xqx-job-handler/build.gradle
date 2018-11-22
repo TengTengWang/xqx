@@ -17,36 +17,36 @@ configurations.all {
 
 dependencies {
 	
-	compile project(':xqx-base')
+	implementation(project(':xqx-base'))
 	
 	// xxl-job
-	compile 'com.xuxueli:xxl-job-core:2.0.1'
+	implementation('com.xuxueli:xxl-job-core:2.0.1')
 	
-	//compile 'com.xqx:xxl-job-core:0.0.1-SNAPSHOT'
-	// compile 'org.eclipse.jetty:jetty-server:9.2.26.v20180806'
-	// compile 'org.eclipse.jetty:jetty-http:9.2.26.v20180806'
-	// compile 'org.eclipse.jetty:jetty-util:9.2.26.v20180806'
-	// compile 'org.eclipse.jetty:jetty-io:9.2.26.v20180806'
+	//implementation('com.xqx:xxl-job-core:0.0.1-SNAPSHOT'
+	// implementation('org.eclipse.jetty:jetty-server:9.2.26.v20180806'
+	// implementation('org.eclipse.jetty:jetty-http:9.2.26.v20180806'
+	// implementation('org.eclipse.jetty:jetty-util:9.2.26.v20180806'
+	// implementation('org.eclipse.jetty:jetty-io:9.2.26.v20180806'
 		
 	// spring boot web
-	compile "org.springframework.boot:spring-boot-starter-web"
+	implementation("org.springframework.boot:spring-boot-starter-web")
 	// eureka
-	compile "org.springframework.cloud:spring-cloud-starter-eureka:${springModulVersion}"
+	implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
 	// jpa
-	compile "org.springframework.boot:spring-boot-starter-data-jpa"
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	// mysql
-	compile "mysql:mysql-connector-java:${mysqlVersion}"
+	implementation("mysql:mysql-connector-java:${mysqlVersion}")
 	
 	
 	// hystrix
-	compile "org.springframework.cloud:spring-cloud-starter-netflix-hystrix"
+	implementation("org.springframework.cloud:spring-cloud-starter-netflix-hystrix")
 	// zipkin
-	compile "org.springframework.cloud:spring-cloud-starter-zipkin:2.0.1.RELEASE"
+	implementation("org.springframework.cloud:spring-cloud-starter-zipkin")
 	// actuator
- 	compile "org.springframework.boot:spring-boot-starter-actuator"
+ 	implementation("org.springframework.boot:spring-boot-starter-actuator")
 	// druid
-	compile 'com.alibaba:druid-spring-boot-starter:1.1.9'
+	implementation('com.alibaba:druid-spring-boot-starter:1.1.9')
  	
  	// test
-	testCompile 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
