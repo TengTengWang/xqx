@@ -41,9 +41,11 @@ public class TokenServicImpl implements ITokenService {
 	@Override
 	public Token createTokenByNameAndPassword(String name, String password) throws ServiceException {
 		if (Strings.isNullOrEmpty(name)) {
+			logger.info("参数Name不能为空");
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数Name不能为空");
 		}
 		if (Strings.isNullOrEmpty(password)) {
+			logger.info("参数Password不能为空");
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数Password不能为空");
 		}
 
@@ -55,6 +57,7 @@ public class TokenServicImpl implements ITokenService {
 			throw new ServiceException(e);
 		}
 		if (userDTO == null) {
+			logger.info("未找到当前用户信息");
 			throw new ServiceException(ErrorCode.DAO_NOTFOUND, "未找到当前用户信息");
 		}
 		if (userDTO.getForbidden()) {
@@ -74,6 +77,7 @@ public class TokenServicImpl implements ITokenService {
 	 */
 	private Token createTokenByUser(UserDTO userDTO) throws ServiceException {
 		if (userDTO == null) {
+			logger.info("参数userInfo不能为空");
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数userInfo不能为空");
 		}
 		try {
@@ -92,6 +96,7 @@ public class TokenServicImpl implements ITokenService {
 	@Override
 	public Token refreshToken(String oldRefreshToken) throws ServiceException {
 		if (Strings.isNullOrEmpty(oldRefreshToken)) {
+			logger.info("参数RefreshToken不能为空");
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数RefreshToken不能为空");
 		}
 		try {
@@ -109,6 +114,7 @@ public class TokenServicImpl implements ITokenService {
 	@Override
 	public UserDTO verifyToken(String accessToken) throws ServiceException {
 		if (Strings.isNullOrEmpty(accessToken)) {
+			logger.info("参数accessToken不能为空");
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数accessToken不能为空");
 		}
 		try {
@@ -121,8 +127,10 @@ public class TokenServicImpl implements ITokenService {
 			return userDTO;
 		} catch (TokenExpiredException e) {
 			// 过期
+			logger.info("Token过期");
 			throw new ServiceException(e, ErrorCode.TOKEN_EXPIRED, e.getMessage());
 		} catch (TokenException e) {
+			logger.info("Token异常", e.getMessage());
 			throw new ServiceException(e, ErrorCode.TOKEN_EXCEPTION, e.getMessage());
 		}
 	}

@@ -38,6 +38,7 @@ public class UserServiceImpl implements IUserService {
 	@CachePut // @CachePut 应用到写数据的方法上，如新增/修改方法，调用方法时会自动把相应的数据放入缓存
 	public UserDTO saveUser(UserDTO user) throws ServiceException {
 		if (user == null) {
+			logger.info("User对象不能为Null");
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "User对象不能为Null");
 		}
 		UserDO userDO = POJOConverterUtils.toUserDO(user);
@@ -59,6 +60,7 @@ public class UserServiceImpl implements IUserService {
 	@Cacheable(sync = true)
 	public UserDTO getUserByID(Long id) throws ServiceException {
 		if (id == null) {
+			logger.info("参数ID不能为Null");
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数ID不能为Null");
 		}
 		UserDO userDO = userRepostory.getOne(id);
@@ -70,13 +72,16 @@ public class UserServiceImpl implements IUserService {
 	public UserDTO getUserByNameAndPassword(String name, String password) throws ServiceException {
 
 		if (StringUtils.isBlank(name)) {
+			logger.info("参数Name不能为Null");
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数Name不能为Null");
 		}
 		if (StringUtils.isBlank(password)) {
+			logger.info("参数Password不能为Null");
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数Password不能为Null");
 		}
 		UserDO userDO = userRepostory.findByNameAndPassword(name, password);
 		if (userDO == null) {
+			logger.info("未找到用户{}", name);
 			throw new ServiceException(ErrorCode.DAO_NOTFOUND, "未找到用户");
 		}
 		return POJOConverterUtils.toUserDTO(userDO);
@@ -93,6 +98,7 @@ public class UserServiceImpl implements IUserService {
 	@Cacheable(sync = true)
 	public Long countUserByName(String name) throws ServiceException {
 		if (name == null) {
+			logger.info("参数Name不能为Null");
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数Name不能为Null");
 		}
 		UserDO user = new UserDO();
@@ -105,7 +111,8 @@ public class UserServiceImpl implements IUserService {
 	@CacheEvict // @CacheEvict 应用到删除数据的方法上，调用方法时会从缓存中删除对应key的数据
 	public void removeUserById(Long id) throws ServiceException {
 		if (id == null) {
-			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数ID：" + id + "不能为Null");
+			logger.info("参数ID不能为Null");
+			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数ID不能为Null");
 		}
 		userRepostory.deleteById(id);
 	}
@@ -118,8 +125,10 @@ public class UserServiceImpl implements IUserService {
 			userDO = userRepostory.saveAndFlush(userDO);
 			return POJOConverterUtils.toUserDTO(userDO);
 		} catch (EntityNotFoundException e) {
+			logger.info("参数用户ID：{}未找到对应的有效记录", id);
 			throw new ServiceException(ErrorCode.DAO_NOTFOUND, "参数用户ID：" + id + "未找到对应的有效记录");
 		} catch (Exception e) {
+			logger.info("参数用户ID：{}设置黑名单失败", id);
 			throw new ServiceException(ErrorCode.DAO_ERROR, "参数用户ID：" + id + "设置黑名单失败");
 		}
 	}
@@ -137,8 +146,10 @@ public class UserServiceImpl implements IUserService {
 			return POJOConverterUtils.toUserDTO(userDO);
 
 		} catch (EntityNotFoundException e) {
+			logger.info("参数用户ID：{}未找到对应的有效记录", id);
 			throw new ServiceException(ErrorCode.DAO_NOTFOUND, "参数用户ID：" + id + "未找到对应的有效记录");
 		} catch (Exception e) {
+			logger.info("参数用户ID：{}解禁失败", id);
 			throw new ServiceException(ErrorCode.DAO_ERROR, "参数用户ID：" + id + "解禁失败");
 		}
 	}
