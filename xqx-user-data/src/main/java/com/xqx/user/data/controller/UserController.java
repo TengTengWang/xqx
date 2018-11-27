@@ -34,6 +34,7 @@ public class UserController {
 	@PostMapping(value = "/findUserByNameAndPassword")
 	public ResponseMessage<UserDTO> findUserByNameAndPassword(@RequestParam("name") String name,
 			@RequestParam("password") String password) {
+		logger.info("请求查询用户name={}的数据");
 		try {
 			UserDTO user = userService.getUserByNameAndPassword(name, password);
 

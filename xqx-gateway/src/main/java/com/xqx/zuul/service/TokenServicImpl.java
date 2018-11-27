@@ -14,8 +14,10 @@ import com.xqx.base.exception.CallRemoteServiceException;
 import com.xqx.base.exception.ErrorCode;
 import com.xqx.base.exception.ServiceException;
 import com.xqx.base.pojo.dto.UserDTO;
+import com.xqx.base.util.RemoteRespCheckUtils;
+import com.xqx.base.vo.ResponseMessage;
 import com.xqx.base.vo.Token;
-import com.xqx.zuul.dao.IRemoteUserDao;
+import com.xqx.zuul.dao.IUserDataFeignClient;
 import com.xqx.zuul.exception.TokenException;
 import com.xqx.zuul.exception.TokenExpiredException;
 import com.xqx.zuul.util.JWTHelper;
@@ -36,7 +38,7 @@ public class TokenServicImpl implements ITokenService {
 	private Long exprieTimeMax;
 
 	@Autowired
-	private IRemoteUserDao remoteUserDao;
+	private IUserDataFeignClient feignClient;
 
 	@Override
 	public Token createTokenByNameAndPassword(String name, String password) throws ServiceException {
@@ -49,21 +51,24 @@ public class TokenServicImpl implements ITokenService {
 			throw new ServiceException(ErrorCode.ILLEGAL_ARGUMENT, "参数Password不能为空");
 		}
 
-		// 通过User微服务检查登陆
-		UserDTO userDTO = null;
+		ResponseMessage<?> remoteResp = feignClient.findUserByNameAndPassword(name, password);
 		try {
-			userDTO = remoteUserDao.findUserByNameAndPassword(name, password);
+			RemoteRespCheckUtils.checkResponse(remoteResp);
 		} catch (CallRemoteServiceException e) {
-			throw new ServiceException(e);
+			logger.info("查询用户信息失败，{}", e.getErrMsg());
+			throw new ServiceException(e.getErrorCode(), "微服务访问失败");
 		}
-		if (userDTO == null) {
+
+		if (remoteResp.getData() == null) {
 			logger.info("未找到当前用户信息");
 			throw new ServiceException(ErrorCode.DAO_NOTFOUND, "未找到当前用户信息");
 		}
-		if (userDTO.getForbidden()) {
-			BLACK_LIST.add(userDTO.getId());
-			throw new ServiceException(ErrorCode.TOKEN_BLACLIST, ErrorCode.TOKEN_BLACLIST.getDescription());
-		}
+		UserDTO userDTO = new Gson().fromJson(remoteResp.getData().toString(), UserDTO.class);
+// 		TODO 黑名单
+//		if (userDTO.getForbidden()) {
+//			BLACK_LIST.add(userDTO.getId());
+//			throw new ServiceException(ErrorCode.TOKEN_BLACLIST, ErrorCode.TOKEN_BLACLIST.getDescription());
+//		}
 		// 生成Token
 		return createTokenByUser(userDTO);
 	}
@@ -122,7 +127,7 @@ public class TokenServicImpl implements ITokenService {
 			String context = JWTHelper.unsign(accessToken);
 			System.out.println("Context ===  " + context);
 			UserDTO userDTO = gson.fromJson(context, UserDTO.class);
-			// TODO 可能需要检查黑名单
+			// TODO 黑名单
 			// checkBlackList(userDTO.getId());
 			return userDTO;
 		} catch (TokenExpiredException e) {

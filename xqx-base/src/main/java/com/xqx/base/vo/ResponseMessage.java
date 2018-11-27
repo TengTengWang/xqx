@@ -3,6 +3,7 @@ package com.xqx.base.vo;
 import java.io.Serializable;
 
 import com.xqx.base.exception.BaseException;
+import com.xqx.base.exception.ErrorCode;
 
 /**
  * 请求响应类
@@ -26,6 +27,9 @@ public class ResponseMessage<T> implements Serializable {
 	 * 响应信息
 	 */
 	private T data;
+
+	public ResponseMessage() {
+	}
 
 	/**
 	 * 构造成功消息
@@ -61,6 +65,16 @@ public class ResponseMessage<T> implements Serializable {
 	}
 
 	/**
+	 * 构造错误消息
+	 * 
+	 * @param e 自定义异常
+	 * @return 消息
+	 */
+	public static <T> ResponseMessage<T> fail(ErrorCode ec) {
+		return new ResponseMessage<T>(ec.getCode(), ec.getDescription(), null);
+	}
+
+	/**
 	 * 私有构造器
 	 * 
 	 * @param status  状态码
@@ -73,31 +87,28 @@ public class ResponseMessage<T> implements Serializable {
 		this.data = data;
 	}
 
-	/**
-	 * 获取状态码
-	 * 
-	 * @return 状态码
-	 */
 	public Integer getStatus() {
 		return status;
 	}
 
-	/**
-	 * 获取异常描述信息
-	 * 
-	 * @return 异常描述信息
-	 */
 	public String getMessage() {
 		return message;
 	}
 
-	/**
-	 * 获取返回数据
-	 * 
-	 * @return 返回数据
-	 */
 	public T getData() {
 		return data;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+
+	public void setData(T data) {
+		this.data = data;
 	}
 
 	@Override

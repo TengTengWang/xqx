@@ -14,11 +14,11 @@ dependencies {
 	implementation('org.springframework.boot:spring-boot-starter-cache')
 	implementation('org.springframework.boot:spring-boot-starter-web')
 	implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-client')
-	// implementation('org.springframework.cloud:spring-cloud-starter-netflix-eureka-server')
 	implementation('org.springframework.cloud:spring-cloud-starter-netflix-hystrix')
 	implementation('org.springframework.cloud:spring-cloud-starter-netflix-hystrix-dashboard')
 	implementation('org.springframework.cloud:spring-cloud-starter-netflix-zuul')
 	implementation('org.springframework.cloud:spring-cloud-starter-zipkin')
+	implementation('org.springframework.cloud:spring-cloud-starter-openfeign')
 	implementation("com.github.ben-manes.caffeine:caffeine:2.6.2")
 	implementation('com.auth0:java-jwt:3.4.0')
 }
