@@ -10,11 +10,16 @@ import org.springframework.stereotype.Repository;
 import com.xqx.user.data.pojo.entity.UserDO;
 
 @Repository
-public interface IUserRepository extends JpaRepository<UserDO,Long>{
+public interface IUserRepository extends JpaRepository<UserDO, Long> {
 
-    @Query("select t from UserDO t where t.name = :name")
-    List<UserDO> findByUserName(@Param("name")String name);
-    
-    UserDO findByNameAndPassword(String name,String password);
-    
+	List<UserDO> findByName(@Param("name") String name);
+
+	@Query("select t from UserDO t where t.name = :name")
+	List<UserDO> findByName1(@Param("name") String name);
+
+	@Query("select t from UserDO t where t.name = ?1")
+	List<UserDO> findByName2(@Param("name") String name);
+
+	UserDO findByNameAndPassword(String name, String password);
+
 }

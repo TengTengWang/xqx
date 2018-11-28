@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.xqx.base.exception.ServiceException;
 import com.xqx.base.pojo.dto.UserDTO;
 import com.xqx.base.vo.ResponseMessage;
+import com.xqx.user.data.dao.IUserRepository;
+import com.xqx.user.data.pojo.entity.UserDO;
 import com.xqx.user.data.service.IUserService;
 
 /**
@@ -23,6 +25,9 @@ public class UserController {
 
 	@Autowired
 	private IUserService userService;
+
+	@Autowired
+	private IUserRepository userRepostory;
 
 	/**
 	 * 根据用户名密码查询用户
@@ -43,6 +48,25 @@ public class UserController {
 		} catch (ServiceException e) {
 			return ResponseMessage.fail(e.getErrorCode().getCode(), e.getErrMsg());
 		}
+	}
+
+	/**
+	 * 根据用户名查询用户
+	 * 
+	 * @param name 用户名
+	 * @return 包含用户信息的实体
+	 */
+	@PostMapping(value = "/findByName")
+	public ResponseMessage<List<UserDO>> findByName(@RequestParam("name") String name) {
+		logger.info("请求查询用户name={}的数据");
+
+		List<UserDO> users = userRepostory.findByName(name);
+		List<UserDO> users1 = userRepostory.findByName1("tengshao");
+		List<UserDO> users2 = userRepostory.findByName2("tengshao");
+
+		logger.info(users1.toString());
+		logger.info(users2.toString());
+		return ResponseMessage.success(users);
 	}
 
 	/**
